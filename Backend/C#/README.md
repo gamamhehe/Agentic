@@ -73,13 +73,11 @@ Please do the following steps for me:
 1. Clone the repo with a shallow clone (--depth 1) into a temporary directory.
 
 2. Create the following folders in the current workspace root if they do not exist:
-   - .github/agents/
    - .github/instructions/
    - .github/skills/
    - .github/patterns/
 
 3. Copy these files from the cloned repo:
-   - Backend/C#/agents/Backend.agent.md  ->  .github/agents/Backend.agent.md
    - Backend/C#/instructions/*           ->  .github/instructions/
    - Backend/C#/skills/*                 ->  .github/skills/
    - Backend/C#/patterns/*               ->  .github/patterns/
@@ -97,8 +95,6 @@ Please do the following steps for me:
 {workspaceRoot}/
   .github/
     copilot-instructions.md
-    agents/
-      Backend.agent.md
     instructions/
       Application.instructions.md
       Architecture.instructions.md
