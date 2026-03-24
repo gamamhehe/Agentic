@@ -1,99 +1,61 @@
-# AI Guidance Setup (Cross‑Project Template)
+﻿# Agentic AI Guidance Repository
 
-This package separates **agent**, **instructions**, **skills**, and **patterns** so each part has a clear responsibility.
+This repo contains GitHub Copilot guidance (agents, instructions, skills, patterns)
+organised by technology stack. Each stack is self-contained and independently installable.
 
-## Responsibilities
+## Stacks
 
-### Agent
-The agent is the orchestrator.
+| Stack              | Folder          | Guide                                     |
+| ------------------ | --------------- | ----------------------------------------- |
+| **C# / .NET**      | `Backend/C#/`   | [Backend README](Backend/C%23/README.md)  |
+| **Vue + Tailwind** | `Frontend/Vue/` | [Frontend README](Frontend/Vue/README.md) |
 
-It:
-- identifies the task type
-- loads only the relevant instruction files
-- loads only the relevant skill files
-- uses patterns as implementation references
-- creates a plan first for non-trivial work
-- suggests missing guidance when the current setup is unclear or incomplete
+## Repository layout
 
-### Instructions
-Instructions define stable rules and boundaries.
-
-They answer:
-- what is allowed
-- what is required
-- what is forbidden
-- where code belongs
-- what standards must be followed
-
-### Skills
-Skills define repeatable task workflows.
-
-They answer:
-- when to use a workflow
-- what inputs are needed
-- what steps to follow
-- what output to produce
-- what to verify before finishing
-
-### Patterns
-Patterns are reusable implementation blueprints and examples.
-
-They answer:
-- what good structure looks like
-- which classes or wiring are typically used
-- example code for the implementation shape
-
-## Precedence
-
-When guidance overlaps or conflicts, use this order:
-
-1. **Instructions**
-2. **Skills**
-3. **Patterns**
-
-Rules:
-- Instructions define policy and boundaries.
-- Skills must work within instruction rules.
-- Patterns must not override instructions or skills.
-- If a skill conflicts with an instruction, the instruction wins and the skill should be updated.
-- If a pattern conflicts with an instruction or skill, follow the instruction or skill and update the pattern later.
-
-## Folder Layout
-
-```plaintext
-agents/        -> orchestrators
-instructions/  -> stable project rules
-skills/        -> task workflows
-patterns/      -> implementation blueprints and examples
+```
+Backend/
+  C#/                  <- C# / .NET guidance
+    agents/
+    instructions/
+    skills/
+    patterns/
+    copilot-instructions.md
+    README.md
+Frontend/
+  Vue/                 <- Vue + Tailwind guidance (work in progress)
+    README.md
+skills/                <- shared / repo-level skills
+  BootstrapAgenticGuidance.skill.md
+README.md              <- this file
 ```
 
-## How to add new guidance
+---
 
-### Add or update an instruction when:
-- a rule should apply across many tasks
-- layer boundaries are unclear
-- naming or testing standards need to be enforced
-- a policy should remain stable over time
+## Detailed guides
 
-### Add or update a skill when:
-- a task is repeated often
-- the same execution steps are followed regularly
-- the agent needs a reusable checklist for implementation or review
+- **Backend (C# / .NET)** [`Backend/C#/README.md`](Backend/C%23/README.md)
+  Full install and usage guide for the C# / .NET stack.
 
-### Add or update a pattern when:
-- the team needs a reusable structure example
-- code wiring or class layout needs a reference implementation
-- a common implementation shape should be documented once and reused
+- **Frontend (Vue + Tailwind)** [`Frontend/Vue/README.md`](Frontend/Vue/README.md)
+  Work in progress.
 
-## Practical workflow
+---
 
-1. Start from `agents/Backend.agent.md`
-2. Load only the instructions relevant to the current task
-3. Load the skills relevant to the current task
-4. Use related patterns as reference while implementing or reviewing
+## Shared bootstrap skill
 
+If Copilot is already configured in your editor, ask it:
 
-## Template notes
+> _"Bootstrap the Agentic guidance"_
 
-- Replace placeholders like `{ProjectName}` and `{Entity}` with real names.
-- `instructions/Domain.Project.Instructions.md` is intentionally project-specific and can be removed or replaced per project.
+Copilot will follow `skills/BootstrapAgenticGuidance.skill.md` and walk you through
+installing whichever stacks you need.
+
+---
+
+## Precedence inside any stack
+
+```
+Instructions  >  Skills  >  Patterns
+```
+
+Instructions define policy. Skills define execution workflows. Patterns provide implementation references.
