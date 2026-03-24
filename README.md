@@ -1,7 +1,13 @@
-﻿# Agentic AI Guidance Repository
+﻿# Agentic — AI Guidance Repository
 
-This repo contains GitHub Copilot guidance (agents, instructions, skills, patterns)
-organised by technology stack. Each stack is self-contained and independently installable.
+GitHub Copilot guidance organised by technology stack.
+Uses a **two-tier model**: agent orchestrators live in your VS Code user space;
+stack-specific guidance is pulled into each project on demand.
+
+| Tier                         | What lives here                | Scope                          |
+| ---------------------------- | ------------------------------ | ------------------------------ |
+| **User space** `~/.github/`  | Agent files + root entry point | All workspaces, installed once |
+| **Project space** `.github/` | Instructions, skills, patterns | Per repo, pulled on demand     |
 
 ## Stacks
 
@@ -14,41 +20,38 @@ organised by technology stack. Each stack is self-contained and independently in
 
 ```
 Backend/
-  C#/                  <- C# / .NET guidance
-    agents/
-    instructions/
+  C#/
+    agents/          <- agent file (copied to user space)
+    instructions/    <- pulled into project on demand
     skills/
     patterns/
     copilot-instructions.md
-    README.md
 Frontend/
-  Vue/                 <- Vue + Tailwind guidance (work in progress)
-    README.md
-skills/                <- shared / repo-level skills
+  Vue/
+    agents/          <- agent file (copied to user space)
+    instructions/    <- pulled into project on demand (WIP)
+    skills/
+    patterns/
+    copilot-instructions.md
+skills/
   BootstrapAgenticGuidance.skill.md
-README.md              <- this file
+README.md
 ```
 
 ---
 
-## Detailed guides
+## How to set up
 
-- **Backend (C# / .NET)** [`Backend/C#/README.md`](Backend/C%23/README.md)
-  Full install and usage guide for the C# / .NET stack.
+See the guide in each stack's README:
 
-- **Frontend (Vue + Tailwind)** [`Frontend/Vue/README.md`](Frontend/Vue/README.md)
-  Work in progress.
+- **Backend (C# / .NET)** → [`Backend/C#/README.md`](Backend/C%23/README.md)
+- **Frontend (Vue + Tailwind)** → [`Frontend/Vue/README.md`](Frontend/Vue/README.md)
 
----
+Or ask Copilot (once it is configured):
 
-## Shared bootstrap skill
+> _"Install the backend guidance into this project"_ > _"Pull the Vue stack guidance into this repo"_
 
-If Copilot is already configured in your editor, ask it:
-
-> _"Bootstrap the Agentic guidance"_
-
-Copilot will follow `skills/BootstrapAgenticGuidance.skill.md` and walk you through
-installing whichever stacks you need.
+Copilot will follow `skills/BootstrapAgenticGuidance.skill.md`.
 
 ---
 
@@ -57,5 +60,3 @@ installing whichever stacks you need.
 ```
 Instructions  >  Skills  >  Patterns
 ```
-
-Instructions define policy. Skills define execution workflows. Patterns provide implementation references.

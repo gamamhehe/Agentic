@@ -8,87 +8,89 @@ Stack: **C#**, **.NET**, **Entity Framework Core**
 
 ## What is this?
 
-This folder contains structured guidance that GitHub Copilot loads automatically
-to assist with backend development tasks:
+This folder provides structured guidance that GitHub Copilot uses to assist with backend tasks.
+It follows a **two-tier model**:
 
-| Folder                    | Purpose                                                                  |
-| ------------------------- | ------------------------------------------------------------------------ |
-| `agents/`                 | Orchestrator — decides which guidance to load for each task              |
-| `instructions/`           | Stable rules: architecture, naming, testing, domain, etc.                |
-| `skills/`                 | Repeatable task workflows: create endpoint, use case, domain model, etc. |
-| `patterns/`               | Implementation blueprints and code examples                              |
-| `copilot-instructions.md` | Entry point Copilot reads when this is your active workspace             |
+| Tier              | Content                                 | Where it lives               | When                         |
+| ----------------- | --------------------------------------- | ---------------------------- | ---------------------------- |
+| **User space**    | `Backend.agent.md` (orchestrator)       | `~/.github/Backend/`         | Installed once per machine   |
+| **Project space** | `instructions/`, `skills/`, `patterns/` | `{repo}/.github/Backend/C#/` | Pulled per project on demand |
 
 ---
 
-## Install
+## Tier 1 — Install the agent to user space (one-time)
 
-Choose one of the two methods below.
+This makes the Backend agent available in **every VS Code workspace** on this machine.
 
-### Option A — Bash (Linux / macOS)
+### Ask Copilot
 
-Installs guidance into your VS Code **user-level** config so it applies to all workspaces.
+If you already have any `copilot-instructions.md` active, open Copilot Chat and ask:
 
-```bash
-DEST="$HOME/.github/Backend/C#"
-TMP=$(mktemp -d)
-git clone --depth 1 https://github.com/gamamhehe/Agentic.git "$TMP"
-mkdir -p "$DEST"
-for f in agents instructions skills patterns; do
-  src="$TMP/Backend/C#/$f"
-  [ -d "$src" ] && cp -r "$src" "$DEST/"
-done
-cp "$TMP/Backend/C#/copilot-instructions.md" "$DEST/"
-rm -rf "$TMP"
+> _"Install the backend agent to my user space"_
+
+Copilot will follow `skills/BootstrapAgenticGuidance.skill.md` — Step 1.
+
+### Result in user space
+
+```
+~/.github/
+  copilot-instructions.md       <- entry point (references the agent)
+  Backend/
+    Backend.agent.md            <- orchestrator for all C# tasks
 ```
 
-### Option B — PowerShell (Windows)
+### Root `copilot-instructions.md` content
 
-```powershell
-$dest = "$env:USERPROFILE\.github\Backend\C#"
-$tmp  = Join-Path $env:TEMP "agentic-$(Get-Random)"
-git clone --depth 1 https://github.com/gamamhehe/Agentic.git $tmp
-$src  = Join-Path $tmp "Backend\C#"
-foreach ($f in @("agents","instructions","skills","patterns")) {
-    $s = Join-Path $src $f ; $d = Join-Path $dest $f
-    if (Test-Path $s) { New-Item $d -ItemType Directory -Force | Out-Null ; Copy-Item "$s\*" $d -Recurse -Force }
-}
-Copy-Item (Join-Path $src "copilot-instructions.md") $dest -Force
-Remove-Item $tmp -Recurse -Force
-```
-
-### Option C — AI Agent (Copilot already active)
-
-Open Copilot Chat and ask:
-
-> _"Bootstrap the backend guidance"_
-
-Copilot will follow `skills/BootstrapAgenticGuidance.skill.md` and run the install steps for you.
-
----
-
-## Wire up the root entry point
-
-GitHub Copilot reads a **single** `copilot-instructions.md` from `%USERPROFILE%\.github\`.
-After installing, create or update that file so it points to this stack:
+After the agent is installed, your `~/.github/copilot-instructions.md` should contain:
 
 ```markdown
-# Copilot Instructions
-
 ## Backend (C#)
 
-Follow guidance in `Backend/C#/copilot-instructions.md`.
-Use `Backend/C#/agents/Backend.agent.md` as the orchestrator for all backend tasks.
+Use `Backend/Backend.agent.md` as the orchestrator for all backend tasks.
+Stack-specific instructions, skills, and patterns are in `.github/Backend/C#/` inside the project repo.
 ```
 
-> If you also have the Frontend stack installed, add a Frontend section to the same file.
-> See [`Frontend/Vue/README.md`](../../Frontend/Vue/README.md).
+---
+
+## Tier 2 — Pull stack guidance into a project (per repo)
+
+This pulls instructions, skills, and patterns into the open workspace so the agent
+has full context for that specific project.
+
+### Ask Copilot
+
+Open the project in VS Code, open Copilot Chat, and ask:
+
+> _"Pull the backend stack guidance into this project"_
+
+or
+
+> _"Install the C# guidance into this repo"_
+
+Copilot will follow `skills/BootstrapAgenticGuidance.skill.md` — Step 2, and copy
+the stack folders into `.github/Backend/C#/` inside the workspace.
+
+### Result in project space
+
+```
+{workspaceRoot}/
+  .github/
+    Backend/
+      C#/
+        copilot-instructions.md
+        instructions/
+        skills/
+        patterns/
+```
 
 ---
 
 ## How to use
 
-Once installed, Copilot automatically picks up the guidance. Use natural language in Copilot Chat:
+Once the agent (Tier 1) is in user space, Copilot is ready for backend tasks in any workspace.
+Once the stack guidance (Tier 2) is pulled into a project, Copilot has full context for that repo.
+
+Use natural language in Copilot Chat:
 
 | Task                      | What to say                                                   |
 | ------------------------- | ------------------------------------------------------------- |
@@ -100,14 +102,14 @@ Once installed, Copilot automatically picks up the guidance. Use natural languag
 | Write tests               | _"Write tests for the CreateOrderUseCase"_                    |
 | Refactor a feature        | _"Refactor the payment feature to follow clean architecture"_ |
 
-Copilot will load the `Backend.agent.md` orchestrator, select the relevant skill,
-and follow the instructions and patterns for that task.
+Copilot loads `Backend.agent.md`, selects the relevant skill, and applies the instructions and patterns.
 
 ---
 
 ## Customise for your project
 
-Open `copilot-instructions.md` and replace the placeholders:
+After pulling stack guidance into a project, open `.github/Backend/C#/copilot-instructions.md`
+and replace the placeholders:
 
 ```markdown
 - Language/runtime: .NET `{DotNetVersion}` -> e.g. .NET 9
@@ -115,14 +117,16 @@ Open `copilot-instructions.md` and replace the placeholders:
 - Background jobs: `{JobRunner}` -> e.g. Hangfire
 ```
 
-For project-specific domain rules, edit or replace `instructions/Domain.Project.Instructions.md`.
+For project-specific domain rules, edit `.github/Backend/C#/instructions/Domain.Project.Instructions.md`.
 
 ---
 
 ## Update guidance
 
-Re-run the install script at any time to pull the latest version from the repo.
-The `--depth 1` clone always fetches the latest default branch.
+To pull the latest version:
+
+- **Agent:** ask Copilot _"Update the backend agent in my user space"_
+- **Stack guidance:** ask Copilot _"Update the backend stack guidance in this project"_
 
 ---
 
@@ -132,10 +136,11 @@ The `--depth 1` clone always fetches the latest default branch.
 2. Open Copilot Chat.
 3. Ask: _"What guidance do you have loaded?"_
 
-Copilot should mention `Backend.agent.md` and the instruction files.
+Copilot should mention `Backend.agent.md`.
+If stack guidance is pulled into the project, it should mention the instruction files too.
 
 If it does not:
 
-- Check that `%USERPROFILE%\.github\copilot-instructions.md` exists.
-- Check that VS Code setting `github.copilot.chat.codeGeneration.useInstructionFiles` is `true`.
-- Check that VS Code **1.93+** is installed.
+- Confirm `~/.github/copilot-instructions.md` exists.
+- Confirm VS Code setting `github.copilot.chat.codeGeneration.useInstructionFiles` is `true`.
+- Confirm VS Code **1.93+** is installed.
