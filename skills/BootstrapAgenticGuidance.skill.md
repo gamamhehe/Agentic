@@ -1,10 +1,9 @@
-# Bootstrap Agentic Guidance Skill
+﻿# Bootstrap Agentic Guidance Skill
 
 ## When to use
 
 Use this skill when the user wants to set up or refresh the AI guidance configuration
-(agents, instructions, skills, patterns) in a target project or in the VS Code user-level
-`.github` directory.
+in a target project or in the VS Code user-level `.github` directory.
 
 Typical trigger phrases:
 
@@ -13,44 +12,65 @@ Typical trigger phrases:
 - "bootstrap Copilot instructions"
 - "download and extract the Agentic repo"
 - "configure AI guidance for this project"
+- "install backend guidance"
+- "install frontend guidance"
+- "install both BE and FE guidance"
 
 ---
 
-## What this skill does
-
-Clones or updates the repository:
+## Repository
 
 ```
 https://github.com/gamamhehe/Agentic.git
 ```
 
-Then copies the AI guidance files into the correct destination so that
-GitHub Copilot picks them up automatically.
+Repo layout:
+
+```
+Backend/
+  C#/
+    agents/
+    instructions/
+    skills/
+    patterns/
+    copilot-instructions.md
+Frontend/
+  Vue/             <- Vue + Tailwind (add more stacks as sub-folders)
+    agents/
+    instructions/
+    skills/
+    patterns/
+    copilot-instructions.md
+skills/                <- shared / repo-level skills (this file lives here)
+README.md
+```
 
 ---
 
 ## Destination paths
 
-| Target                                                     | Path                                                             |
-| ---------------------------------------------------------- | ---------------------------------------------------------------- |
-| **VS Code user-level** (global, applies to all workspaces) | `%USERPROFILE%\.github\` (Windows) or `~/.github/` (Linux/macOS) |
-| **Project-level** (applies only to the open workspace)     | `{workspaceRoot}\.github\`                                       |
+| Scope                                            | Windows                    | Linux / macOS              |
+| ------------------------------------------------ | -------------------------- | -------------------------- |
+| **VS Code user-level** applies to ALL workspaces | `%USERPROFILE%\.github\`   | `~/.github/`               |
+| **Project-level** applies only to this workspace | `{workspaceRoot}\.github\` | `{workspaceRoot}/.github/` |
 
-The VS Code user-level path is read by GitHub Copilot as the global instruction source.
-Place files there when the guidance should apply across **all projects**.
-Place files in the project root `.github\` when the guidance is **project-specific**.
+> VS Code reads `copilot-instructions.md` from either location.
+> User-level is the right choice when guidance should follow the developer across all projects.
+> Project-level is the right choice when guidance is repo-specific.
 
 ---
 
 ## Inputs
 
-Before running, confirm with the user:
+Confirm with the user before running:
 
-- **Destination**: user-level (`~/.github/`) or project-level (`{workspaceRoot}/.github/`)?
-- **Mode**: fresh clone or update an existing copy?
-- **Overwrite policy**: overwrite existing files, skip, or merge?
-
-Default to **project-level** + **overwrite** if not specified.
+| Input                | Options                        | Default |
+| -------------------- | ------------------------------ | ------- |
+| **Stack**            | `backend`, `frontend`, `both`  | `both`  |
+| **Destination**      | `user` or `project`            | `user`  |
+| **Backend language** | `C#` (more may be added later) | `C#`    |
+| **Frontend stack**   | `Vue`, `React`, `Angular`, ... | `Vue`   |
+| **Overwrite**        | `yes` / `no`                   | `yes`   |
 
 ---
 
@@ -58,79 +78,130 @@ Default to **project-level** + **overwrite** if not specified.
 
 ### 1. Check prerequisites
 
-Verify `git` is available:
-
 ```powershell
 git --version
 ```
 
-If `git` is not found, instruct the user to install Git from https://git-scm.com and retry.
+If `git` is not found, instruct the user to install it from https://git-scm.com and retry.
 
-### 2. Resolve the destination directory
+---
+
+### 2. Resolve the destination root
 
 **User-level (Windows):**
 
 ```powershell
 $dest = "$env:USERPROFILE\.github"
+if (-not (Test-Path $dest)) { New-Item -ItemType Directory -Path $dest | Out-Null }
 ```
 
 **User-level (Linux / macOS):**
 
 ```bash
 dest="$HOME/.github"
+mkdir -p "$dest"
 ```
 
-**Project-level:**
-Use the workspace root folder reported by the IDE.
+**Project-level:** use the workspace root folder instead of the above.
 
-### 3. Clone or update the repo into a temp location
+---
+
+### 3. Clone the repo into a temp directory
 
 ```powershell
-$tmp = Join-Path $env:TEMP "agentic-guidance-$(Get-Random)"
+$tmp = Join-Path $env:TEMP "agentic-$(Get-Random)"
 git clone --depth 1 https://github.com/gamamhehe/Agentic.git $tmp
 ```
 
-A shallow clone (`--depth 1`) is used to keep it fast.
+---
 
-### 4. Copy guidance files to the destination
+### 4. Copy files Backend (C#)
 
-Copy only the AI guidance folders — do **not** copy `.git`, `README.md`, or project-specific files
-unless the user explicitly requests them.
+Run this when stack is `backend` or `both`.
 
 ```powershell
-$folders = @("agents", "instructions", "skills", "patterns")
+$beStack = "C#"   # adjust if another backend language is added later
+$beSrc   = Join-Path $tmp "Backend\$beStack"
+$beDest  = Join-Path $dest "Backend\$beStack"
 
-foreach ($folder in $folders) {
-    $src = Join-Path $tmp $folder
-    $dst = Join-Path $dest $folder
-
-    if (Test-Path $src) {
-        if (-not (Test-Path $dst)) {
-            New-Item -ItemType Directory -Path $dst | Out-Null
-        }
-        Copy-Item -Path "$src\*" -Destination $dst -Recurse -Force
+foreach ($f in @("agents", "instructions", "skills", "patterns")) {
+    $s = Join-Path $beSrc $f
+    $d = Join-Path $beDest $f
+    if (Test-Path $s) {
+        New-Item -ItemType Directory -Path $d -Force | Out-Null
+        Copy-Item -Path "$s\*" -Destination $d -Recurse -Force
     }
 }
+
+$ci = Join-Path $beSrc "copilot-instructions.md"
+if (Test-Path $ci) { Copy-Item $ci -Destination $beDest -Force }
 ```
 
-Also copy `copilot-instructions.md` to the destination root:
+---
+
+### 5. Copy files Frontend
+
+Run this when stack is `frontend` or `both`.
+Replace `{FeStack}` with the user's chosen stack (e.g. `React`, `Vue`, `Angular`).
 
 ```powershell
-$ciSrc = Join-Path $tmp "copilot-instructions.md"
-if (Test-Path $ciSrc) {
-    Copy-Item -Path $ciSrc -Destination $dest -Force
+$feStack = "Vue"   # change if using a different stack (React, Angular, ...)
+$feSrc   = Join-Path $tmp "Frontend\$feStack"
+$feDest  = Join-Path $dest "Frontend\$feStack"
+
+foreach ($f in @("agents", "instructions", "skills", "patterns")) {
+    $s = Join-Path $feSrc $f
+    $d = Join-Path $feDest $f
+    if (Test-Path $s) {
+        New-Item -ItemType Directory -Path $d -Force | Out-Null
+        Copy-Item -Path "$s\*" -Destination $d -Recurse -Force
+    }
+}
+
+$ci = Join-Path $feSrc "copilot-instructions.md"
+if (Test-Path $ci) { Copy-Item $ci -Destination $feDest -Force }
+```
+
+---
+
+### 6. Write the root copilot-instructions.md
+
+This is the **single entry point** GitHub Copilot reads.
+Copy the repo root one if it exists, otherwise generate it:
+
+```powershell
+$rootCi = Join-Path $tmp "copilot-instructions.md"
+if (Test-Path $rootCi) {
+    Copy-Item $rootCi -Destination $dest -Force
+} else {
+    $content = @"
+# Copilot Instructions
+
+## Backend (C#)
+Follow guidance in ``Backend/C#/copilot-instructions.md``.
+Use ``Backend/C#/agents/Backend.agent.md`` as the orchestrator for all backend tasks.
+
+## Frontend (Vue + Tailwind)
+Follow guidance in ``Frontend/$feStack/copilot-instructions.md``.
+Use ``Frontend/$feStack/agents/Frontend.agent.md`` as the orchestrator for all frontend tasks.
+"@
+    Set-Content -Path (Join-Path $dest "copilot-instructions.md") -Value $content -Encoding UTF8
 }
 ```
 
-### 5. Clean up the temp clone
+If only one stack is installed, reference only that stack in the entry point.
+
+---
+
+### 7. Clean up
 
 ```powershell
 Remove-Item -Path $tmp -Recurse -Force
 ```
 
-### 6. Confirm the result
+---
 
-List the installed files so the user can verify:
+### 8. Verify
 
 ```powershell
 Get-ChildItem -Path $dest -Recurse | Select-Object FullName
@@ -138,71 +209,76 @@ Get-ChildItem -Path $dest -Recurse | Select-Object FullName
 
 ---
 
-## Output
+## Wiring how Copilot resolves guidance
 
-After the skill completes, the following structure should exist at the destination:
+GitHub Copilot reads **one** `copilot-instructions.md` from:
+
+1. `{workspaceRoot}/.github/copilot-instructions.md` project-level (takes precedence)
+2. `%USERPROFILE%\.github\copilot-instructions.md` user-level (global fallback)
+
+The root file at user-level should reference both stacks:
+
+```markdown
+# Copilot Instructions
+
+## Backend (C#)
+
+Follow guidance in `Backend/C#/copilot-instructions.md`.
+Use `Backend/C#/agents/Backend.agent.md` as the orchestrator for all backend tasks.
+
+## Frontend (Vue + Tailwind)
+
+Follow guidance in `Frontend/Vue/copilot-instructions.md`.
+Use `Frontend/Vue/agents/Frontend.agent.md` as the orchestrator for all frontend tasks.
+```
+
+For a **project-level** install, place only the relevant stack's `copilot-instructions.md`
+directly at `{workspaceRoot}/.github/copilot-instructions.md`.
+
+---
+
+## Expected result after install (both stacks)
 
 ```
-{dest}/
-  copilot-instructions.md        <- Copilot global instructions entry point
-  agents/
-    Backend.agent.md
-  instructions/
-    Application.instructions.md
-    Architecture.instructions.md
-    Domain.instructions.md
-    Domain.Project.Instructions.md
-    Infrastructure.instructions.md
-    Naming.instructions.md
-    Settings.instructions.md
-    Testing.instructions.md
-    WebApi.instructions.md
-  skills/
-    AddRequestTracking.skill.md
-    ConfigureApplicationSettings.skill.md
-    CreateEndpoint.skill.md
-    CreateUseCase.skill.md
-    ImplementInfrastructureDependency.skill.md
-    RefactorBackendFeature.skill.md
-    ReviewBackendChange.skill.md
-    UpdateDomainModel.skill.md
-    WriteTests.skill.md
-    BootstrapAgenticGuidance.skill.md
-  patterns/
-    ApiPatterns.md
-    ApplicationPatterns.md
-    CodePatterns.md
-    EntityFrameworkCorePatterns.md
-    InfrastructurePatterns.md
-    LogPatterns.md
-    SettingsPatterns.md
-    StructurePatterns.md
-    TestingPatterns.md
+%USERPROFILE%\.github\
+  copilot-instructions.md              <- root entry point
+  Backend\
+    C#\
+      copilot-instructions.md
+      agents\
+        Backend.agent.md
+      instructions\   (...)
+      skills\         (...)
+      patterns\       (...)
+  Frontend\
+    Vue\
+      copilot-instructions.md
+      agents\
+        Frontend.agent.md
+      instructions\   (...)
+      skills\         (...)
+      patterns\       (...)
 ```
 
 ---
 
 ## Verification
 
-After installation, ask the user to:
-
 1. Open VS Code.
-2. Open any workspace.
-3. Start a GitHub Copilot Chat session.
-4. Ask: _"What guidance do you have loaded?"_
+2. Start a Copilot Chat session.
+3. Ask: _"What guidance do you have loaded?"_
 
-Copilot should reference the `copilot-instructions.md` and the `agents/Backend.agent.md` content.
+Copilot should reference the root `copilot-instructions.md` and the relevant agent file.
 
 If Copilot does not pick up the instructions, check:
 
-- The `copilot-instructions.md` file is at `~/.github/copilot-instructions.md`
-- VS Code setting `github.copilot.chat.codeGeneration.useInstructionFiles` is set to `true`
+- `copilot-instructions.md` exists at `%USERPROFILE%\.github\copilot-instructions.md`
+- VS Code setting `github.copilot.chat.codeGeneration.useInstructionFiles` is `true`
+- VS Code version is **1.93 or later** (user-level `.github` support was added in that release)
 
 ---
 
-## Notes
+## Re-running / updating
 
-- The VS Code user-level `.github` folder is supported from VS Code 1.93+.
-- Project-level `.github/copilot-instructions.md` always takes precedence over user-level.
-- After updating files, no VS Code restart is needed — Copilot reads the files on each request.
-- To update guidance in the future, re-run this skill. The `--depth 1` clone always pulls the latest `main` branch.
+Re-run steps 3-7 at any time to pull the latest guidance.
+The `--depth 1` clone always fetches the latest default branch.
