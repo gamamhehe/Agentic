@@ -10,10 +10,10 @@ Stack: **Vue 3**, **Tailwind CSS**
 
 ## Two-tier model
 
-| Tier              | Content                                 | Where it lives                 | When                         |
-| ----------------- | --------------------------------------- | ------------------------------ | ---------------------------- |
-| **User space**    | `Frontend.agent.md` (orchestrator)      | `~/.github/Frontend/`          | Installed once per machine   |
-| **Project space** | `instructions/`, `skills/`, `patterns/` | `{repo}/.github/Frontend/Vue/` | Pulled per project on demand |
+| Tier              | Content                                 | Where it lives                                                         | When                         |
+| ----------------- | --------------------------------------- | ---------------------------------------------------------------------- | ---------------------------- |
+| **User space**    | `Frontend.agent.md` (orchestrator)      | `~/.github/agents/`                                                    | Installed once per machine   |
+| **Project space** | `instructions/`, `skills/`, `patterns/` | `{repo}/.github/instructions/`, `.github/skills/`, `.github/patterns/` | Pulled per project on demand |
 
 ---
 
@@ -22,8 +22,17 @@ Stack: **Vue 3**, **Tailwind CSS**
 Copy the prompt below and paste it into any AI chat.
 The AI will clone the repo, copy the agent files, write the entry point, and clean up.
 
-> See the full prompt in [`skills/BootstrapAgenticGuidance.skill.md`](../../skills/BootstrapAgenticGuidance.skill.md)
-> under **Prompt — Install agents to user space**.
+> See the full prompt in the Backend C# README under **Tier 1 — Install the agent to user space**.
+
+After running, the result in user space will be:
+
+```
+~/.github/
+  copilot-instructions.md
+  agents/
+    Backend.agent.md
+    Frontend.agent.md
+```
 
 ---
 
@@ -31,8 +40,32 @@ The AI will clone the repo, copy the agent files, write the entry point, and cle
 
 Once stack guidance files exist in this repo, copy the prompt below and paste it into any AI chat.
 
-> See the full prompt in [`skills/BootstrapAgenticGuidance.skill.md`](../../skills/BootstrapAgenticGuidance.skill.md)
-> under **Prompt — Pull frontend stack guidance into the current project**.
+> See the full prompt in the Backend C# README under **Tier 2 — Pull stack guidance into a project**.
+
+After running, the result in project space will be:
+
+```
+{workspaceRoot}/
+  .github/
+    copilot-instructions.md
+    agents/
+      Frontend.agent.md
+    instructions/
+      Architecture.instructions.md
+      Components.instructions.md
+      Naming.instructions.md
+      Styling.instructions.md
+      Testing.instructions.md
+    skills/
+      CreateComponent.skill.md
+      CreatePage.skill.md
+      CreateComposable.skill.md
+      WriteTests.skill.md
+    patterns/
+      ComponentPatterns.md
+      ComposablePatterns.md
+      TailwindPatterns.md
+```
 
 ---
 
