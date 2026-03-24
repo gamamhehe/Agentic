@@ -19,23 +19,20 @@ Stack: **Vue 3**, **Tailwind CSS**
 
 ## Tier 1 — Install the agent to user space (one-time)
 
-Once the agent file exists in this repo, open Copilot Chat and ask:
+Copy the prompt below and paste it into any AI chat.
+The AI will clone the repo, copy the agent files, write the entry point, and clean up.
 
-> _"Install the frontend agent to my user space"_
-
-Copilot will follow `skills/BootstrapAgenticGuidance.skill.md` — Step 1.
+> See the full prompt in [`skills/BootstrapAgenticGuidance.skill.md`](../../skills/BootstrapAgenticGuidance.skill.md)
+> under **Prompt — Install agents to user space**.
 
 ---
 
 ## Tier 2 — Pull stack guidance into a project (per repo)
 
-Once stack guidance files exist in this repo, open the project in VS Code and ask:
+Once stack guidance files exist in this repo, copy the prompt below and paste it into any AI chat.
 
-> _"Pull the frontend stack guidance into this project"_
-
-or
-
-> _"Install the Vue guidance into this repo"_
+> See the full prompt in [`skills/BootstrapAgenticGuidance.skill.md`](../../skills/BootstrapAgenticGuidance.skill.md)
+> under **Prompt — Pull frontend stack guidance into the current project**.
 
 ---
 

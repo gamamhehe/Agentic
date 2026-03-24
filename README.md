@@ -42,16 +42,13 @@ README.md
 
 ## How to set up
 
-See the guide in each stack's README:
+See the prompt scripts in each stack's README — copy a prompt, paste it into any AI chat,
+and the AI will clone the repo, copy the right files, and clean up automatically.
 
 - **Backend (C# / .NET)** → [`Backend/C#/README.md`](Backend/C%23/README.md)
 - **Frontend (Vue + Tailwind)** → [`Frontend/Vue/README.md`](Frontend/Vue/README.md)
 
-Or ask Copilot (once it is configured):
-
-> _"Install the backend guidance into this project"_ > _"Pull the Vue stack guidance into this repo"_
-
-Copilot will follow `skills/BootstrapAgenticGuidance.skill.md`.
+All available prompts are in [`skills/BootstrapAgenticGuidance.skill.md`](skills/BootstrapAgenticGuidance.skill.md).
 
 ---
 

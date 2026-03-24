@@ -1,263 +1,181 @@
-﻿# Bootstrap Agentic Guidance Skill
+﻿# Bootstrap Agentic Guidance
 
-## When to use
+## Purpose
 
-Use this skill when the user wants to set up or install AI guidance from the Agentic repo.
-
-Typical trigger phrases:
-
-- "set up the AI guidance"
-- "install the Agentic config"
-- "bootstrap Copilot instructions"
-- "configure AI guidance for this project"
-- "install backend guidance"
-- "install frontend guidance"
-- "install both BE and FE guidance"
-- "pull the backend stack into this project"
-- "pull the frontend stack into this project"
+This file is a **prompt script**.
+Copy the relevant section below and paste it into any AI chat (GitHub Copilot, ChatGPT, Claude, etc.).
+The AI will execute every step: clone the repo, copy the files, and clean up.
 
 ---
 
-## Architecture  two-tier install model
+## Prompt  Install agents to user space (run once per machine)
 
-Guidance is split into two tiers with different scopes and install targets.
-
-```
-Tier 1  User space (installed once, applies to ALL workspaces)
-  %USERPROFILE%\.github\                  (Windows)
-  ~/.github/                              (Linux / macOS)
-    copilot-instructions.md              <- root entry point
-    Backend\
-      Backend.agent.md                   <- BE orchestrator
-    Frontend\
-      Frontend.agent.md                  <- FE orchestrator
-
-Tier 2  Project space (pulled per project, lives inside the repo)
-  {workspaceRoot}\.github\
-    Backend\C#\
-      instructions\   <- C# rules
-      skills\         <- C# task workflows
-      patterns\       <- C# blueprints
-    Frontend\Vue\
-      instructions\   <- Vue + Tailwind rules
-      skills\         <- Vue task workflows
-      patterns\       <- Vue blueprints
-```
-
-**Agents** (Tier 1) are stable orchestrators that live in user space and work across all projects.
-**Stack guidance** (Tier 2) is project-specific and pulled into the repo on demand.
+> Copy everything inside the block and paste it into your AI chat.
 
 ---
 
-## Repository
+**Paste this prompt:**
 
 ```
-https://github.com/gamamhehe/Agentic.git
-```
+I want to set up AI guidance from https://github.com/gamamhehe/Agentic.git into my VS Code user space so it applies to all my workspaces.
 
-Layout:
+Please do the following steps for me:
 
-```
-Backend/
-  C#/
-    agents/
-      Backend.agent.md
-    instructions/
-    skills/
-    patterns/
-    copilot-instructions.md
-Frontend/
-  Vue/
-    agents/
-      Frontend.agent.md
-    instructions/
-    skills/
-    patterns/
-    copilot-instructions.md
-skills/
-  BootstrapAgenticGuidance.skill.md    <- this file
-README.md
-```
+1. Clone the repo with a shallow clone (--depth 1) into a temporary directory.
 
----
+2. Detect my OS:
+   - Windows: user space is %USERPROFILE%\.github\
+   - Linux / macOS: user space is ~/.github/
 
-## Step 1  Install agents to user space (one-time)
+3. Create the following folders in user space if they do not exist:
+   - Backend/
+   - Frontend/
 
-This step is done **once per developer machine**.
-It places the agent orchestrators and the root entry point in VS Code user space
-so they are available in every workspace.
+4. Copy these files from the cloned repo to user space:
+   - Backend/C#/agents/Backend.agent.md  ->  {userSpace}/Backend/Backend.agent.md
+   - Frontend/Vue/agents/Frontend.agent.md  ->  {userSpace}/Frontend/Frontend.agent.md
 
-### What to do
+5. Create the file {userSpace}/copilot-instructions.md with this exact content:
 
-Ask the user which stacks they need  backend, frontend, or both  then execute the steps below.
-
-### 1a. Clone to a temp location
-
-Use the terminal in VS Code:
-
-```bash
-# Linux / macOS
-TMP=$(mktemp -d) && git clone --depth 1 https://github.com/gamamhehe/Agentic.git "$TMP"
-```
-
-```powershell
-# Windows
-$tmp = Join-Path $env:TEMP "agentic-$(Get-Random)"
-git clone --depth 1 https://github.com/gamamhehe/Agentic.git $tmp
-```
-
-### 1b. Copy the agent file(s) to user space
-
-**Backend agent (C#):**
-
-```bash
-mkdir -p "$HOME/.github/Backend"
-cp "$TMP/Backend/C#/agents/Backend.agent.md" "$HOME/.github/Backend/"
-```
-
-```powershell
-New-Item "$env:USERPROFILE\.github\Backend" -ItemType Directory -Force | Out-Null
-Copy-Item "$tmp\Backend\C#\agents\Backend.agent.md" "$env:USERPROFILE\.github\Backend\"
-```
-
-**Frontend agent (Vue):**
-
-```bash
-mkdir -p "$HOME/.github/Frontend"
-cp "$TMP/Frontend/Vue/agents/Frontend.agent.md" "$HOME/.github/Frontend/"
-```
-
-```powershell
-New-Item "$env:USERPROFILE\.github\Frontend" -ItemType Directory -Force | Out-Null
-Copy-Item "$tmp\Frontend\Vue\agents\Frontend.agent.md" "$env:USERPROFILE\.github\Frontend\"
-```
-
-### 1c. Write the root copilot-instructions.md
-
-Create `%USERPROFILE%\.github\copilot-instructions.md` (or `~/.github/copilot-instructions.md`)
-with content matching the stacks installed:
-
-**Both stacks:**
-
-```markdown
 # Copilot Instructions
 
 ## Backend (C#)
 Use `Backend/Backend.agent.md` as the orchestrator for all backend tasks.
-Stack-specific instructions, skills, and patterns are in `.github/Backend/C#/` inside the project repo.
+Stack-specific instructions, skills, and patterns live in `.github/Backend/C#/` inside each project repo.
 
 ## Frontend (Vue + Tailwind)
 Use `Frontend/Frontend.agent.md` as the orchestrator for all frontend tasks.
-Stack-specific instructions, skills, and patterns are in `.github/Frontend/Vue/` inside the project repo.
-```
+Stack-specific instructions, skills, and patterns live in `.github/Frontend/Vue/` inside each project repo.
 
-### 1d. Clean up
+6. Delete the temporary clone directory completely.
 
-```bash
-rm -rf "$TMP"
-```
-
-```powershell
-Remove-Item $tmp -Recurse -Force
+7. Show me the final file tree under my user space .github/ folder so I can confirm everything is in place.
 ```
 
 ---
 
-## Step 2  Pull stack guidance into a project (per project, on demand)
+## Prompt  Pull backend stack guidance into the current project
 
-This step is run inside a specific project repo when the developer wants Copilot
-to have full stack context for that workspace.
-
-The user triggers this with a prompt like:
-
-- *"Install the backend stack guidance into this project"*
-- *"Pull the Vue guidance into this repo"*
-- *"Set up Copilot guidance for this workspace"*
-
-### What to do
-
-1. Confirm which stack(s) to pull: `backend`, `frontend`, or `both`.
-2. Check that `git` is available in the terminal.
-3. Clone the Agentic repo to a temp location (same as Step 1a).
-4. Copy the stack folders into the project's `.github/` directory:
-
-**Backend (C#):**
-
-```bash
-DEST=".github/Backend/C#"
-mkdir -p "$DEST"
-for f in instructions skills patterns; do
-  cp -r "$TMP/Backend/C#/$f" "$DEST/"
-done
-cp "$TMP/Backend/C#/copilot-instructions.md" "$DEST/"
-```
-
-```powershell
-$dest = ".github\Backend\C#"
-foreach ($f in @("instructions","skills","patterns")) {
-    $s = Join-Path $tmp "Backend\C#\$f"
-    $d = Join-Path $dest $f
-    if (Test-Path $s) { New-Item $d -ItemType Directory -Force | Out-Null ; Copy-Item "$s\*" $d -Recurse -Force }
-}
-Copy-Item "$tmp\Backend\C#\copilot-instructions.md" $dest -Force
-```
-
-**Frontend (Vue):**
-
-```bash
-DEST=".github/Frontend/Vue"
-mkdir -p "$DEST"
-for f in instructions skills patterns; do
-  cp -r "$TMP/Frontend/Vue/$f" "$DEST/"
-done
-cp "$TMP/Frontend/Vue/copilot-instructions.md" "$DEST/"
-```
-
-```powershell
-$dest = ".github\Frontend\Vue"
-foreach ($f in @("instructions","skills","patterns")) {
-    $s = Join-Path $tmp "Frontend\Vue\$f"
-    $d = Join-Path $dest $f
-    if (Test-Path $s) { New-Item $d -ItemType Directory -Force | Out-Null ; Copy-Item "$s\*" $d -Recurse -Force }
-}
-Copy-Item "$tmp\Frontend\Vue\copilot-instructions.md" $dest -Force
-```
-
-5. Clean up the temp clone.
-6. Confirm the result by listing `.github/` in the workspace.
+> Open the project in VS Code, open AI chat, and paste this prompt.
 
 ---
 
-## Wiring  how Copilot resolves guidance
+**Paste this prompt:**
 
 ```
-User space ~/.github/copilot-instructions.md
-  -> references Backend/Backend.agent.md   (orchestrator, always available)
-  -> references Frontend/Frontend.agent.md (orchestrator, always available)
+I want to pull the C# / .NET stack guidance from https://github.com/gamamhehe/Agentic.git into this project so GitHub Copilot has full context for this workspace.
 
-Project space {workspaceRoot}/.github/
-  Backend/C#/
-    instructions/   <- loaded by the agent when working on C# tasks
-    skills/
-    patterns/
-  Frontend/Vue/
-    instructions/   <- loaded by the agent when working on Vue tasks
-    skills/
-    patterns/
+Please do the following steps for me:
+
+1. Clone the repo with a shallow clone (--depth 1) into a temporary directory.
+
+2. Create the folder .github/Backend/C#/ in the current workspace root if it does not exist.
+
+3. Copy these folders from the cloned repo into .github/Backend/C#/:
+   - Backend/C#/instructions/
+   - Backend/C#/skills/
+   - Backend/C#/patterns/
+
+4. Copy the file Backend/C#/copilot-instructions.md into .github/Backend/C#/copilot-instructions.md
+
+5. Delete the temporary clone directory completely.
+
+6. Show me the final file tree under .github/ so I can confirm everything is in place.
 ```
 
-The agent files in user space are **always active**.
-They look for stack guidance in the project `.github/` folder when executing a task.
-If no project-level stack guidance is found, the agent will note the gap and ask the user to pull it.
+---
+
+## Prompt  Pull frontend stack guidance into the current project
+
+> Open the project in VS Code, open AI chat, and paste this prompt.
+
+---
+
+**Paste this prompt:**
+
+```
+I want to pull the Vue + Tailwind stack guidance from https://github.com/gamamhehe/Agentic.git into this project so GitHub Copilot has full context for this workspace.
+
+Please do the following steps for me:
+
+1. Clone the repo with a shallow clone (--depth 1) into a temporary directory.
+
+2. Create the folder .github/Frontend/Vue/ in the current workspace root if it does not exist.
+
+3. Copy these folders from the cloned repo into .github/Frontend/Vue/:
+   - Frontend/Vue/instructions/
+   - Frontend/Vue/skills/
+   - Frontend/Vue/patterns/
+
+4. Copy the file Frontend/Vue/copilot-instructions.md into .github/Frontend/Vue/copilot-instructions.md
+
+5. Delete the temporary clone directory completely.
+
+6. Show me the final file tree under .github/ so I can confirm everything is in place.
+```
+
+---
+
+## Prompt  Pull both stacks into the current project
+
+> Use this when a project uses both C# backend and Vue frontend.
+
+---
+
+**Paste this prompt:**
+
+```
+I want to pull both the C# backend and Vue + Tailwind frontend stack guidance from https://github.com/gamamhehe/Agentic.git into this project.
+
+Please do the following steps for me:
+
+1. Clone the repo with a shallow clone (--depth 1) into a temporary directory.
+
+2. Backend  create .github/Backend/C#/ if it does not exist, then copy:
+   - Backend/C#/instructions/  ->  .github/Backend/C#/instructions/
+   - Backend/C#/skills/        ->  .github/Backend/C#/skills/
+   - Backend/C#/patterns/      ->  .github/Backend/C#/patterns/
+   - Backend/C#/copilot-instructions.md  ->  .github/Backend/C#/copilot-instructions.md
+
+3. Frontend  create .github/Frontend/Vue/ if it does not exist, then copy:
+   - Frontend/Vue/instructions/  ->  .github/Frontend/Vue/instructions/
+   - Frontend/Vue/skills/        ->  .github/Frontend/Vue/skills/
+   - Frontend/Vue/patterns/      ->  .github/Frontend/Vue/patterns/
+   - Frontend/Vue/copilot-instructions.md  ->  .github/Frontend/Vue/copilot-instructions.md
+
+4. Delete the temporary clone directory completely.
+
+5. Show me the final file tree under .github/ so I can confirm everything is in place.
+```
+
+---
+
+## Prompt  Update guidance (re-pull latest)
+
+> Use this to refresh any previously installed guidance to the latest version.
+
+---
+
+**Paste this prompt:**
+
+```
+I want to update my Agentic guidance to the latest version from https://github.com/gamamhehe/Agentic.git.
+
+Please ask me first:
+- Do you want to update user space agents, project stack guidance, or both?
+- Which stack(s)? Backend (C#), Frontend (Vue), or both?
+
+Then follow the same steps as the original install prompts above (clone, copy, delete temp clone), overwriting any existing files.
+```
 
 ---
 
 ## Expected result after full setup
 
-**User space:**
+**User space (once per machine):**
 
 ```
-~/.github/
+~/.github/                          <- %USERPROFILE%\.github\ on Windows
   copilot-instructions.md
   Backend/
     Backend.agent.md
@@ -286,26 +204,23 @@ If no project-level stack guidance is found, the agent will note the gap and ask
 
 ---
 
-## Verification
+## Verify
 
-1. Open VS Code in any workspace.
-2. Open Copilot Chat.
-3. Ask: *"What guidance do you have loaded?"*
+After running any prompt above, ask the AI:
 
-Copilot should mention the agent file(s) from user space.
-If stack guidance has been pulled into the project, it should mention those too.
+```
+Did everything complete successfully? Show me the .github/ file tree.
+```
 
-If Copilot does not pick up instructions:
+Then open VS Code Copilot Chat and ask:
 
+```
+What guidance do you have loaded?
+```
+
+Copilot should mention `Backend.agent.md` and/or `Frontend.agent.md`.
+
+If it does not:
 - Confirm `~/.github/copilot-instructions.md` exists.
 - Confirm VS Code setting `github.copilot.chat.codeGeneration.useInstructionFiles` is `true`.
 - Confirm VS Code **1.93+** is installed.
-
----
-
-## Updating guidance
-
-To get the latest version of any tier:
-
-- **Agents (user space):** re-run Step 1  re-copy the agent files.
-- **Stack guidance (project space):** ask Copilot *"Update the backend stack guidance"* or re-run Step 2 for the relevant stack.
