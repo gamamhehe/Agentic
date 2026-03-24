@@ -4,9 +4,6 @@
 
 This file is the lightweight entry point for repository guidance.
 
-Use `agents/Backend.agent.md` as the main orchestration guide.
-That file explains how to select and apply instructions, skills, and patterns.
-
 ## Project Guidelines (customize)
 
 - Language/runtime: .NET `{DotNetVersion}` (example: 10)
