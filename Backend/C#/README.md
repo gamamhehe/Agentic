@@ -43,21 +43,9 @@ Please do the following steps for me:
    - Backend/C#/agents/Backend.agent.md    ->  {userSpace}/agents/Backend.agent.md
    - Frontend/Vue/agents/Frontend.agent.md  ->  {userSpace}/agents/Frontend.agent.md
 
-5. Create the file {userSpace}/copilot-instructions.md with this exact content:
+5. Delete the temporary clone directory completely.
 
-# Copilot Instructions
-
-## Backend (C#)
-Use `agents/Backend.agent.md` as the orchestrator for all backend tasks.
-Stack-specific instructions, skills, and patterns live in `.github/instructions/`, `.github/skills/`, and `.github/patterns/` inside each project repo.
-
-## Frontend (Vue + Tailwind)
-Use `agents/Frontend.agent.md` as the orchestrator for all frontend tasks.
-Stack-specific instructions, skills, and patterns live in `.github/instructions/`, `.github/skills/`, and `.github/patterns/` inside each project repo.
-
-6. Delete the temporary clone directory completely.
-
-7. Show me the final file tree under my user space .github/ folder so I can confirm everything is in place.
+6. Show me the final file tree under my user space .github/ folder so I can confirm everything is in place.
 ```
 
 ### Result in user space
