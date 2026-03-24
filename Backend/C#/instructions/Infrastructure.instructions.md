@@ -10,33 +10,27 @@ applyTo: "**/*.Infrastructure/**"
 - `patterns/EntityFrameworkCorePatterns.md`
 - `patterns/CodePatterns.md`
 - `patterns/LogPatterns.md`
+- `patterns/HangfirePatterns.md`
 
 ## Layer Breakdown
 
-### Source Projects
-
-| Project | Role |
-| --- | --- |
-| Domain | Core business models, enums, exceptions, and utilities. No dependencies on other layers. |
-| Application | Use-cases CQRS commands/queries (MediatR), DTOs, pipeline behaviors, interfaces. Depends only on Domain. |
-| Infrastructure | Technical implementations caching, external service adapters, observability/telemetry. Implements interfaces defined in Application. |
-| WebApi | Entry point Minimal API endpoints, middleware, DI bootstrapping. Depends on Application and Infrastructure. |
+See `instructions/Architecture.instructions.md` for the full source project roles and dependency rules.
 
 ---
 
 ### ProjectName.Infrastructure Folder Structure
 
-| Folder | Purpose |
-|---|---|
-| Caches/ | Caching helpers and decorated cache services |
-| Files/ | File handling utilities (e.g. AzureBlobStorageService) |
-| Services/ | Implementations of Application interfaces, external adapters |
-| Services/HangfireJobService/ | Background job implementations |
-| Persistence/ | ApplicationDbContext, ApplicationDbContextFactory |
-| Persistence/Configurations/ | EF Core IEntityTypeConfiguration classes |
-| Persistence/Repositories/ | Repository implementations |
-| Migrations/ | EF Core generated migration files |
-| Migrations/DBScripts/ | Idempotent SQL scripts generated from migrations |
+| Folder                       | Purpose                                                      |
+| ---------------------------- | ------------------------------------------------------------ |
+| Caches/                      | Caching helpers and decorated cache services                 |
+| Files/                       | File handling utilities (e.g. AzureBlobStorageService)       |
+| Services/                    | Implementations of Application interfaces, external adapters |
+| Services/HangfireJobService/ | Background job implementations (one class per job)           |
+| Persistence/                 | ApplicationDbContext, ApplicationDbContextFactory            |
+| Persistence/Configurations/  | EF Core IEntityTypeConfiguration classes                     |
+| Persistence/Repositories/    | Repository implementations                                   |
+| Migrations/                  | EF Core generated migration files                            |
+| Migrations/DBScripts/        | Idempotent SQL scripts generated from migrations             |
 
 ---
 
@@ -48,7 +42,6 @@ applyTo: "**/*.Infrastructure/**"
 - Use IEntityTypeConfiguration for EF Core mappings - never configure in entity classes
 - Use DelegatingHandler for injecting auth headers into HTTP clients
 - Use GetOrCreateAsync for cache operations to prevent stampedes
-- Register all services via IServiceCollection extension methods in WebApi/Extensions/
 - Place Application Insights middleware/telemetry implementations under `Infrastructure/ApplicationInsights/`
 
 ---
@@ -65,13 +58,14 @@ applyTo: "**/*.Infrastructure/**"
 
 ### Current sub-methods
 
-| Method | Concern |
-|---|---|
-| AddDatabase(services, connectionString) | ApplicationDbContext and IApplicationDbContext |
-| AddRepositories(services) | All IXxxRepository to XxxRepository |
-| AddCoreServices(services) | IUserContext, IDocumentExpiryNotificationService, HttpContextAccessor |
-| AddHttpClients(services) | Typed HttpClient registrations |
-| AddObservability(services, configuration) | Application Insights telemetry + logging middleware registrations |
+| Method                                    | Concern                                                               |
+| ----------------------------------------- | --------------------------------------------------------------------- |
+| AddDatabase(services, connectionString)   | ApplicationDbContext and IApplicationDbContext                        |
+| AddRepositories(services)                 | All IXxxRepository to XxxRepository                                   |
+| AddCoreServices(services)                 | IUserContext, IDocumentExpiryNotificationService, HttpContextAccessor |
+| AddHttpClients(services)                  | Typed HttpClient registrations                                        |
+| AddObservability(services, configuration) | Application Insights telemetry + logging middleware registrations     |
+| AddHangfire(services, configuration)      | Hangfire storage, server, and job infrastructure                      |
 
 ### Adding a new concern checklist
 
@@ -79,6 +73,21 @@ applyTo: "**/*.Infrastructure/**"
 2. Add the call to AddInfrastructureServices
 3. If the concern is optional, guard with a null/empty config check and return silently
 4. Update the sub-methods table above
+
+---
+
+## Hangfire Jobs
+
+- Place job classes under `Services/HangfireJobService/` - one class per job
+- Accept `IJobCancellationToken` for graceful shutdown; call `ThrowIfCancellationRequested()` at the start
+- Decorate each job class with `[AutomaticRetry(Attempts = 3)]`
+- Use the **simple** variant (constructor-inject singleton/transient deps) when no scoped services are needed
+- Use the **scoped** variant (`IServiceScopeFactory` + `CreateAsyncScope`) when EF Core repositories or other scoped services are required - never inject scoped services directly into the constructor
+- Register Hangfire storage and server in a dedicated `AddHangfire(services, configuration)` sub-method in `DependencyInjection.cs`
+- **Recurring jobs**: register via `UseHangfireJobs(this IHost host)` in `DependencyInjection.cs`; call `app.UseHangfireJobs()` in `Program.cs` after `UseAuthorization()` and `UseHangfireDashboard()`
+- **Fire-and-forget jobs**: enqueue at runtime via `IBackgroundJobClient.Enqueue<TJob>(...)` from the use-case or service that triggers the work
+- Optional: restrict dashboard access with `IDashboardAuthorizationFilter`
+- See `patterns/HangfirePatterns.md` for fully implemented reference code
 
 ---
 
@@ -96,14 +105,6 @@ applyTo: "**/*.Infrastructure/**"
 - Wrap all external HTTP APIs behind an Application interface
 - Use Refit for typed HTTP clients
 - Map HTTP errors to domain exceptions - never propagate raw HttpRequestException
-
----
-
-## Background Jobs (Hangfire)
-
-- Place under Services/HangfireJobService/
-- Accept IJobCancellationToken for graceful shutdown
-- Decorate with [AutomaticRetry(Attempts = 3)]
 
 ---
 

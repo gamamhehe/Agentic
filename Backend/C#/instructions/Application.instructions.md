@@ -30,6 +30,7 @@ It is the source of policy for CQRS organization, validators, DTO ownership, and
 
 - Every use-case is either a Query for reads or a Command for writes
 - Each query or command lives in its own sub-folder under `Queries/` or `Commands/`
+- Commands follow the exact same folder and file structure as Queries — three co-located files: request record, handler, and validator
 - Each folder contains exactly three primary files:
   - `{Name}.cs` for the request record
   - `{Name}Handler.cs` for the MediatR handler

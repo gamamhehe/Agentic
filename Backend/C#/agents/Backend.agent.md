@@ -34,6 +34,7 @@ Use the repository guidance in this order:
 3. **Patterns** = implementation references
 
 Rules:
+
 - instructions define policy
 - skills operate within instruction rules
 - patterns provide examples and blueprints
@@ -76,7 +77,8 @@ Typical task types include:
 - domain logic
 - infrastructure integration
 - persistence change
-- background job
+- background job (recurring or fire-and-forget Hangfire job)
+- authentication or authorization
 - authentication or authorization
 - settings/configuration change
 - observability change
@@ -103,6 +105,7 @@ Examples:
 - blob/file flow
 - application settings change
 - logging/telemetry improvement
+- background job (recurring or fire-and-forget Hangfire job)
 - test implementation
 - refactor existing feature
 
@@ -113,12 +116,14 @@ This classification determines which instructions and skills to load.
 Load only the instruction files relevant to the current task, impacted layers, and requested output.
 
 Core instructions often needed:
+
 - `instructions/Architecture.instructions.md`
 - `instructions/Naming.instructions.md`
 
 Load `instructions/Testing.instructions.md` when implementation, review, or refactoring affects test expectations.
 
 Load layer-specific instructions only when the task touches that concern:
+
 - `instructions/Domain.instructions.md`
 - `instructions/Domain.Project.Instructions.md` when project-specific domain rules matter
 - `instructions/Application.instructions.md`
@@ -133,6 +138,7 @@ Do not load unrelated instructions by default.
 Use skills as repeatable workflows, not as policy documents.
 
 Examples:
+
 - `skills/CreateEndpoint.skill.md`
 - `skills/CreateUseCase.skill.md`
 - `skills/UpdateDomainModel.skill.md`
@@ -151,9 +157,11 @@ Patterns are examples and blueprints.
 Use only the patterns relevant to the current task.
 
 Examples:
+
 - `patterns/ApiPatterns.md`
 - `patterns/ApplicationPatterns.md`
 - `patterns/InfrastructurePatterns.md`
+- `patterns/HangfirePatterns.md`
 - `patterns/EntityFrameworkCorePatterns.md`
 - `patterns/LogPatterns.md`
 - `patterns/SettingsPatterns.md`
@@ -167,6 +175,7 @@ Do not treat patterns as hard policy. Instructions and skills take precedence.
 For non-trivial work, always create a short implementation or review plan before making changes.
 
 The plan should include:
+
 - goal
 - impacted layers
 - main design approach
@@ -187,12 +196,14 @@ Once the task is understood and the relevant guidance is loaded:
 - keep transport concerns out of business logic
 
 If reviewing code:
+
 - identify issues by severity
 - explain why they matter
 - propose concrete fixes
 - avoid low-value nitpicks
 
 If refactoring:
+
 - improve structure without changing intended behavior
 - simplify control flow
 - improve naming
@@ -204,6 +215,7 @@ If refactoring:
 For any meaningful implementation or review, suggest appropriate tests.
 
 Cover when relevant:
+
 - happy path
 - validation failures
 - edge cases
@@ -218,6 +230,7 @@ Cover when relevant:
 If a task reveals a missing or weak project rule, skill, or pattern, explicitly call it out.
 
 Examples:
+
 - missing instruction for blob upload flow
 - missing skill for external API integration
 - missing pattern for a common endpoint style
@@ -225,6 +238,7 @@ Examples:
 - missing testing guidance for integration tests
 
 When this happens, recommend whether the fix belongs in:
+
 - an instruction file
 - a skill file
 - a pattern file
@@ -285,18 +299,23 @@ When this happens, recommend whether the fix belongs in:
 Use this default structure for engineering responses unless the user asks for another format.
 
 ## Plan
+
 Short implementation or review plan.
 
 ## Design Notes
+
 Important decisions, assumptions, and tradeoffs.
 
 ## Code
+
 Only the necessary code.
 
 ## Tests
+
 Recommended test cases.
 
 ## Guidance Gaps
+
 Any instruction, skill, or pattern guidance that should be added or improved.
 
 Keep the response practical and concise.

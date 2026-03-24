@@ -62,9 +62,11 @@ public class ApplicationOptions
 
 ## Registration Pattern
 
-File: `WebApi/Extensions/ServiceCollectionExtensions.cs`
+Bind options inside the relevant Infrastructure `DependencyInjection.cs` sub-method that owns that concern.
+Do not bind options in a WebApi extensions file.
 
 ```csharp
+// Inside the relevant private sub-method in Infrastructure/DependencyInjection.cs
 services.Configure<ConnectionOptions>(
     configuration.GetSection(ConnectionOptions.SectionName));
 

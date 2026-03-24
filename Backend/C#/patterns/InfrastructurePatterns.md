@@ -1,5 +1,7 @@
 ﻿# Infrastructure Patterns
 
+---
+
 ## Memory Cache Service
 
 `GetOrCreateAsync` prevents cache stampedes.
@@ -144,17 +146,16 @@ Location: `Infrastructure/DependencyInjection.cs`
 /// </summary>
 public static IServiceCollection AddInfrastructureServices(
     this IServiceCollection services,
-    string connectionString)
+    IConfiguration configuration)
 {
-    AddDatabase(services, connectionString);
+    AddDatabase(services, configuration);
     AddRepositories(services);
     AddCoreServices(services);
     AddHttpClients(services);
-
-
     AddCaching(services);
     AddAuthentication(services, configuration);
     AddBlobStorage(services, configuration);
+    AddHangfire(services, configuration);
 
     return services;
 }
@@ -342,5 +343,37 @@ private static void AddBlobStorage(
 
     services.AddSingleton(_ => new BlobServiceClient(connectionString));
     services.AddScoped<IBlobStorageService, AzureBlobStorageService>();
+}
+```
+
+---
+
+### AddHangfire
+
+Registers Hangfire storage, server, and `IBackgroundJobClient`.
+Optional - silently skips registration when the connection string is absent.
+Call `AddHangfireServer()` to start the in-process worker.
+Job classes are resolved from DI automatically - no manual registration needed.
+
+```csharp
+private static void AddHangfire(
+    IServiceCollection services,
+    IConfiguration configuration)
+{
+    var connectionString = configuration.GetConnectionString("HangfireDb");
+
+    if (string.IsNullOrWhiteSpace(connectionString))
+    {
+        // Optional integration - skip silently when not configured
+        return;
+    }
+
+    services.AddHangfire(config => config
+        .SetDataCompatibilityLevel(CompatibilityLevel.Version_180)
+        .UseSimpleAssemblyNameTypeSerializer()
+        .UseRecommendedSerializerSettings()
+        .UseSqlServerStorage(connectionString));
+
+    services.AddHangfireServer();
 }
 ```

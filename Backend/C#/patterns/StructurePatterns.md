@@ -1,3 +1,4 @@
+# Structure Patterns
 
 ```plaintext
 repository-name/
@@ -11,9 +12,15 @@ repository-name/
 │   ├── {ProjectName}.Application/
 │   │   ├── Common/
 │   │   │   ├── Behaviors/
-│   │   │   └── Interfaces/
+│   │   │   ├── Interfaces/
+│   │   │   └── Options/
 │   │   ├── Features/
 │   │   │   ├── {FeatureA}/
+│   │   │   │   ├── Commands/
+│   │   │   │   │   └── {CommandName}/
+│   │   │   │   │       ├── {CommandName}Command.cs
+│   │   │   │   │       ├── {CommandName}CommandHandler.cs
+│   │   │   │   │       └── {CommandName}CommandValidator.cs
 │   │   │   │   ├── Queries/
 │   │   │   │   │   └── {QueryName}/
 │   │   │   │   │       ├── {QueryName}Query.cs
@@ -25,8 +32,15 @@ repository-name/
 │   │
 │   ├── {ProjectName}.Infrastructure/
 │   │   ├── Caches/
+│   │   ├── Files/
 │   │   ├── Services/
-│   │   └── Integrations/
+│   │   │   └── HangfireJobService/
+│   │   ├── Persistence/
+│   │   │   ├── Configurations/
+│   │   │   └── Repositories/
+│   │   ├── Migrations/
+│   │   │   └── DBScripts/
+│   │   └── DependencyInjection.cs
 │   │
 │   └── {ProjectName}.WebApi/
 │       ├── Endpoints/
