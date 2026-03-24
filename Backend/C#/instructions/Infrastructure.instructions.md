@@ -8,7 +8,7 @@ applyTo: "**/*.Infrastructure/**"
 
 - `patterns/InfrastructurePatterns.md`
 - `patterns/EntityFrameworkCorePatterns.md`
-- `patterns/CodePatterns.md`
+- `patterns/DomainPatterns.md`
 - `patterns/LogPatterns.md`
 - `patterns/HangfirePatterns.md`
 

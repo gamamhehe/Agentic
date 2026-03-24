@@ -49,6 +49,7 @@ Use related patterns only as implementation reference, not as policy.
 | CQRS handlers and validation | `patterns/ApplicationPatterns.md` |
 | Repositories, caching, DI, HTTP adapters | `patterns/InfrastructurePatterns.md` |
 | EF Core audit and configuration | `patterns/EntityFrameworkCorePatterns.md` |
-| Background jobs and shared primitives | `patterns/CodePatterns.md` |
+| Background jobs | `patterns/HangfirePatterns.md` |
+| Domain shared primitives | `patterns/DomainPatterns.md` |
 | Application Insights and request logging | `patterns/LogPatterns.md` |
 | Unit and integration tests | `patterns/TestingPatterns.md` |

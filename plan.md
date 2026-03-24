@@ -1,156 +1,221 @@
-# Refactor Plan — Agentic Guidance System for C# Developers & Leaders
+# Refactor Plan - Backend Agent as the Single Working Entry Point
 
-> Status: Draft — open for discussion
-> Scope: `Backend/C#/` only (Frontend is WIP and out of scope for now)
+> Status: Updated from resolved decisions
+> Scope: `Backend/C#/` only
 
 ---
 
 ## Goal
 
-Transform this repo from a **guidance archive** into a **developer and team leader productivity tool** that:
+Refactor the backend guidance so the system works through `Backend/C#/agents/Backend.agent.md` as the real entry point for coding work.
 
-1. Is immediately usable on a real C# project with zero setup confusion
-2. Gives a team lead clear control and visibility over what the AI will and won't do
-3. Teaches the patterns it enforces, rather than just enforcing them silently
-4. Scales cleanly from solo developer to team use
-5. Grows incrementally as new needs arise without requiring full rewrites
+The main goal is no longer "developer and leader productivity" in general.
+The goal is to make the backend agent:
+
+1. the single place that developers rely on to start work
+2. complete enough that it does not depend on `copilot-instructions.md` for important behavior
+3. clear about instruction, skill, and pattern usage
+4. governable by team leads through agent-facing guidance, not by expecting developers to read extra files
 
 ---
 
-## Problem Statement
+## Confirmed Decisions
 
-The current state is well-structured but has several gaps for real-world use:
+These decisions are already resolved and should be treated as plan inputs, not open questions.
 
-| #   | Problem                                                                                                                                                                             | Impact                                                          |
-| --- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
-| 1   | `copilot-instructions.md` is a generic placeholder — developers must manually fill in blanks                                                                                        | First install feels incomplete; AI starts with degraded context |
-| 2   | Skills are workflow guides but have no "quick-start" summary — a developer must read the whole file to know what happens                                                            | Slows down adoption                                             |
-| 3   | No skill exists for common senior-developer tasks: **Architecture Review**, **Breaking Change Analysis**, **Performance Review**                                                    | Limits value for tech leads                                     |
-| 4   | `Domain.Project.Instructions.md` is hardcoded to one project (Guidance Archive) — a new user sees domain rules for the wrong project                                                | Confusing for reuse                                             |
-| 5   | Pattern files have no difficulty/complexity signal — a junior developer and a tech lead get the same undifferentiated content                                                       | No progressive disclosure                                       |
-| 6   | No onboarding path for team leads — nothing explains how to configure the AI for a team, set review standards, or define what "done" means                                          | Leaders can't govern the AI                                     |
-| 7   | `CodePatterns.md` is now effectively `DomainPatterns.md` (renamed last session) — but `Architecture.instructions.md` still references it as "Background jobs and shared primitives" | Stale cross-reference                                           |
-| 8   | No **HangfirePatterns.md** reference in `Architecture.instructions.md` Related Pattern Files table                                                                                  | Pattern is invisible to agent at architecture-load time         |
-| 9   | `README.md` install prompts copy `Domain.Project.Instructions.md` as-is — a new project gets the wrong domain out of the box                                                        | Incorrect setup                                                 |
-| 10  | No `BootstrapAgenticGuidance.skill.md` update path — `skills/BootstrapAgenticGuidance.skill.md` exists at repo root but is never referenced from the Backend README                 | Broken discovery                                                |
+| # | Decision |
+| --- | --- |
+| 1 | Merge the useful content of `Backend/C#/copilot-instructions.md` into `Backend/C#/agents/Backend.agent.md`, then leave `copilot-instructions.md` blank or minimal. |
+| 2 | Do not optimize for developers reading standalone instruction entry files directly. |
+| 3 | Assume developers work through `Backend/C#/agents/Backend.agent.md`; that file is the real operational surface. |
+| 4 | The deleted item is out of scope and should be removed from the plan. |
+| 5 | Patterns are for code samples and implementation reference only, not policy or onboarding. |
+| 6 | "Leaders can't govern the AI" should be solved with an agent-facing governance plan and an example template. |
+| 7 | The stale cross-reference issue should simply be fixed. |
+| 8 | Add fields only where they materially help the agent behave better. |
+| 9 | Remove the old item 9 from the plan. |
+| 10 | Remove the old item 10 from the plan. |
+
+---
+
+## Updated Problem Statement
+
+The current issue is not mainly missing documentation for humans.
+The real issue is that the backend guidance is split across files in a way that does not match how coding actually starts.
+
+### Current gaps
+
+1. `Backend/C#/agents/Backend.agent.md` is the actual execution entry point, but some core guidance still lives in `Backend/C#/copilot-instructions.md`.
+2. The plan previously assumed developers would read instruction files directly, but in practice the agent should load and apply them.
+3. The old plan treated patterns too broadly; they should be positioned only as code examples and reference material.
+4. Team-lead control is underspecified: there is no clear agent-facing way to define review strictness, required checks, or "done" criteria.
+5. At least one stale reference still exists and should be corrected directly instead of debated.
 
 ---
 
 ## Proposed Changes
 
-### Group A — Quick Fixes (no structural change, low risk)
+### A. Make `Backend.agent.md` self-sufficient
 
-These are safe, targeted corrections.
+Update `Backend/C#/agents/Backend.agent.md` so it includes the important guidance currently duplicated or implied elsewhere:
 
-| ID  | File                                 | Change                                                                                                                              |
-| --- | ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
-| A1  | `Architecture.instructions.md`       | Fix Related Pattern Files table: `CodePatterns.md` → `DomainPatterns.md`, add `HangfirePatterns.md` row                             |
-| A2  | `Backend/C#/README.md`               | Update install prompt to NOT copy `Domain.Project.Instructions.md` — instead instruct developer to create their own from a template |
-| A3  | `Backend/C#/copilot-instructions.md` | Replace placeholder comments with a concrete filled-in example and clear inline instructions for what to change                     |
-| A4  | `Domain.Project.Instructions.md`     | Add a prominent `> ⚠️ Project-specific — replace with your own domain model` header (already exists but could be stronger)          |
+- guidance precedence
+- task classification
+- when to load instructions
+- when to load skills
+- how to use patterns
+- plan-first behavior for non-trivial work
+- when to stop for approval
+
+Result:
+The backend agent becomes the one file that actually governs backend coding behavior.
+
+### B. Reduce `copilot-instructions.md` to a blank or minimal stub
+
+After merging the useful content into the backend agent, reduce `Backend/C#/copilot-instructions.md` so it does not carry important logic anymore.
+
+Recommended end state:
+
+- either blank by design
+- or a very short note that points to `agents/Backend.agent.md`
+
+Result:
+No important backend behavior depends on a secondary entry file.
+
+### C. Reframe patterns as reference-only
+
+Update planning and wording so patterns are clearly described as:
+
+- code sample references
+- implementation blueprints
+- non-authoritative compared with instructions and skills
+
+Result:
+The agent uses patterns to shape code, not to infer policy.
+
+### D. Fix stale references directly
+
+Correct the outdated `CodePatterns.md` / `DomainPatterns.md` reference mismatch and any related stale wording in backend guidance.
+
+Result:
+The guidance becomes internally consistent without introducing more structural debate.
+
+### E. Add an agent-facing governance layer for leads
+
+To solve "leaders can't govern the AI", add a lightweight governance file that the backend agent can load when present.
+
+Recommended file:
+`Backend/C#/instructions/TeamStandards.instructions.md`
+
+This file should let a lead define:
+
+- required review strictness
+- mandatory vs optional patterns
+- minimum testing expectations
+- forbidden shortcuts
+- approval-required change types
+- feature completion criteria
+
+Result:
+Leads govern the agent by configuring guidance the agent reads, not by expecting every developer to remember extra rules.
 
 ---
 
-### Group B — New Skills for Tech Leads (additive, no renames)
+## Team Lead Governance Plan
 
-Three high-value skills that don't exist yet and would specifically help senior developers and team leads.
+This is the concrete plan for solving the leadership-control gap.
 
-| ID  | File                                           | Purpose                                                                                                                                                                                                         |
-| --- | ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| B1  | `skills/ReviewArchitectureCompliance.skill.md` | Deep architecture review: boundary violations, layer leaks, DI correctness, pattern deviations. More thorough than `ReviewBackendChange`.                                                                       |
-| B2  | `skills/AnalyseBreakingChange.skill.md`        | Given a proposed change, identify API contract breaks, EF Core migration risks, behavior regressions, dependent service impacts.                                                                                |
-| B3  | `skills/PlanFeature.skill.md`                  | Given a feature request, produce a structured implementation plan: layers touched, CQRS decomposition, infrastructure needs, test strategy, risks. Oriented at a lead reviewing AI output or planning a sprint. |
+### Step 1
 
-These complement the existing set without replacing anything:
+Create `TeamStandards.instructions.md` as an optional project-level instruction file.
 
+### Step 2
+
+Teach `Backend.agent.md` to load it only when present and only when relevant.
+
+### Step 3
+
+Use simple fields that are easy for both humans and AI to follow.
+
+### Step 4
+
+Treat this file as agent-facing policy, not as a tutorial.
+
+### Step 5
+
+Keep project-specific domain rules separate from team operating rules.
+
+---
+
+## Sample Governance Template
+
+This is a sample shape for the team-lead control file.
+
+```md
+# Team Standards
+
+## Review Mode
+
+- severity threshold: blocking
+- architecture violations: blocking
+- naming inconsistencies: advisory
+- missing observability on critical flows: blocking
+
+## Required For Feature Completion
+
+- at least one happy-path test
+- validation behavior covered
+- logging or telemetry added for critical paths
+- cancellation token handled in async application and infrastructure code
+
+## Approval Required Before Implementation
+
+- database schema changes
+- new external service integrations
+- background jobs
+- authentication or authorization changes
+
+## Forbidden Shortcuts
+
+- business logic in endpoints
+- direct infrastructure access from domain
+- skipping tests for non-trivial handlers
+
+## Team Preferences
+
+- prefer explicit request and response models
+- prefer MediatR-based use cases
+- prefer result-based error handling where already used
 ```
-Current skills:           New skills:
-CreateEndpoint            ReviewArchitectureCompliance  ← deeper than ReviewBackendChange
-CreateUseCase             AnalyseBreakingChange         ← new concern
-UpdateDomainModel         PlanFeature                   ← lead-oriented planning
-ImplementInfrastructure
-WriteTests
-ReviewBackendChange
-RefactorBackendFeature
-AddRequestTracking
-ConfigureApplicationSettings
-```
+
+This is enough to let a lead govern the agent in a practical way.
 
 ---
 
-### Group C — Team Lead Configuration Layer (new, additive)
+## What Changed From the Old Plan
 
-A thin new layer that gives a team lead a place to configure what the AI enforces for their team, without modifying core guidance files.
-
-**Proposed new file: `instructions/TeamStandards.instructions.md`**
-
-This file would let a lead define:
-
-- which patterns are mandatory vs optional for their team
-- review severity levels (blocking vs advisory)
-- team-specific naming overrides
-- what "done" means for a feature (e.g. requires integration test, requires observability wiring)
-- which layers a junior developer should not touch without review
-
-This stays **empty / commented out** in the repo and is filled in per-project. It sits between generic guidance and project-specific domain rules.
+- Removed the assumption that developers read instruction entry files directly.
+- Removed deleted or no-longer-needed items from the decision list.
+- Removed bootstrap and README items that are no longer part of the chosen direction.
+- Repositioned patterns as code-sample references only.
+- Recentered the plan around `Backend.agent.md` as the real execution surface.
+- Added a concrete team-governance approach with a sample template.
 
 ---
 
-### Group D — Structural Renames
+## Execution Order
 
-Renames to fix naming inconsistencies discovered in earlier sessions.
-
-| ID  | Current name                         | Proposed name                             | Reason                                                            |
-| --- | ------------------------------------ | ----------------------------------------- | ----------------------------------------------------------------- |
-| D1  | `patterns/CodePatterns.md`           | `patterns/DomainPatterns.md`              | Content is `Result<T>` at `Domain/Common/` — name matches content |
-| D2  | `Backend/C#/copilot-instructions.md` | No rename — but content overhaul (see A3) | File name is correct, content is the issue                        |
-
-> Note: D1 requires updating all cross-references in instruction files, skill files, and `Architecture.instructions.md`. A find-and-replace is sufficient.
+1. Merge important `copilot-instructions.md` content into `Backend/C#/agents/Backend.agent.md`.
+2. Blank or minimize `Backend/C#/copilot-instructions.md`.
+3. Fix stale backend guidance references.
+4. Add `TeamStandards.instructions.md` template if we want lead governance now.
+5. Do a final wording pass so plans, instructions, and patterns all match the new model.
 
 ---
 
-### Group E — Developer Experience: Quick-Start Summaries in Skills (optional, low priority)
+## Out of Scope
 
-Add a `## Summary` one-liner at the top of each skill file so a developer can read one sentence and decide whether to load the full file.
-
-Example for `CreateEndpoint.skill.md`:
-
-```markdown
-## Summary
-
-Create a Minimal API endpoint, wire it to a MediatR command or query, declare OpenAPI metadata, and verify the handler is thin.
-```
-
-This is cosmetic and low-risk but improves daily usability.
-
----
-
-## Decisions Needed
-
-| #   | Question                                                                             | Options                                                                                                                   |
-| --- | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------- |
-| 1   | **Rename `CodePatterns.md` → `DomainPatterns.md`?**                                  | Yes (correct + consistent) / No (too disruptive to ongoing projects that already pulled the files)                        |
-| 2   | **Add `TeamStandards.instructions.md`?**                                             | Yes, as an empty template / Yes, with example content / Not yet                                                           |
-| 3   | **Which new skills to build first?**                                                 | All three (B1–B3) / Just `PlanFeature` (highest lead value) / Just `ReviewArchitectureCompliance` (closes the review gap) |
-| 4   | **Fix the `copilot-instructions.md` placeholder?**                                   | Yes, overhaul with a concrete example / Yes, minimal fix / Leave as-is                                                    |
-| 5   | **Update the bootstrap install prompt to exclude `Domain.Project.Instructions.md`?** | Yes (correct) / No, keep it and rely on the warning header                                                                |
-
----
-
-## What is NOT in scope for this refactor
-
-- Frontend (`Frontend/Vue/`) — it is WIP and should be tackled separately
-- Changing the two-tier model (user space / project space) — it is solid
-- Changing the agent behavior logic in `Backend.agent.md` — the workflow is correct
-- Any changes to the `agentic.instructions.md` meta-governance file — just updated last session
-
----
-
-## Suggested Execution Order (if all approved)
-
-```
-Phase 1 — Clean up (A1–A4, D1)           ← safe, no new content
-Phase 2 — New skills (B1–B3)             ← additive, no breakage
-Phase 3 — Team lead layer (C)            ← new file, no renames
-Phase 4 — Quick-start summaries (E)      ← polish, last
-```
+- Frontend guidance
+- Rebuilding the whole instruction system
+- Turning patterns into policy files
+- Any work for deleted items 4, 9, and 10

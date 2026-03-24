@@ -13,7 +13,7 @@ It follows a **two-tier model**:
 
 | Tier              | Content                                 | Where it lives                                                         | When                         |
 | ----------------- | --------------------------------------- | ---------------------------------------------------------------------- | ---------------------------- |
-| **User space**    | `Backend.agent.md` (orchestrator)       | `~/.github/agents/`                                                    | Installed once per machine   |
+| **User space**    | `Backend.agent.md` (main backend agent) | `~/.github/agents/`                                                    | Installed once per machine   |
 | **Project space** | `instructions/`, `skills/`, `patterns/` | `{repo}/.github/instructions/`, `.github/skills/`, `.github/patterns/` | Pulled per project on demand |
 
 ---
@@ -23,7 +23,7 @@ It follows a **two-tier model**:
 This makes the Backend agent available in **every VS Code workspace** on this machine.
 
 Copy the prompt below and paste it into any AI chat (Copilot, ChatGPT, Claude, etc.).
-The AI will clone the repo, copy the agent file, write the entry point, and clean up.
+The AI will clone the repo, copy the agent file, and clean up.
 
 ```
 I want to set up AI guidance from https://github.com/gamamhehe/Agentic.git into my VS Code user space so it applies to all my workspaces.
@@ -52,7 +52,6 @@ Please do the following steps for me:
 
 ```
 ~/.github/
-  copilot-instructions.md
   agents/
     Backend.agent.md
     Frontend.agent.md
@@ -82,7 +81,7 @@ Please do the following steps for me:
    - Backend/C#/skills/*                 ->  .github/skills/
    - Backend/C#/patterns/*               ->  .github/patterns/
 
-4. Copy the file Backend/C#/copilot-instructions.md into .github/copilot-instructions.md
+4. Copy the file Backend/C#/copilot-instructions.md into .github/copilot-instructions.md as a minimal project entry file
 
 5. Delete the temporary clone directory completely.
 
@@ -99,7 +98,6 @@ Please do the following steps for me:
       Application.instructions.md
       Architecture.instructions.md
       Domain.instructions.md
-      Domain.Project.Instructions.md
       Infrastructure.instructions.md
       Naming.instructions.md
       Settings.instructions.md
@@ -118,8 +116,9 @@ Please do the following steps for me:
     patterns/
       ApiPatterns.md
       ApplicationPatterns.md
-      CodePatterns.md
+      DomainPatterns.md
       EntityFrameworkCorePatterns.md
+      HangfirePatterns.md
       InfrastructurePatterns.md
       LogPatterns.md
       SettingsPatterns.md
@@ -146,21 +145,18 @@ Use natural language in Copilot Chat:
 | Write tests               | _"Write tests for the CreateOrderUseCase"_                    |
 | Refactor a feature        | _"Refactor the payment feature to follow clean architecture"_ |
 
-Copilot loads `Backend.agent.md`, selects the relevant skill, and applies the instructions and patterns.
+`.github/copilot-instructions.md` is only a lightweight project entry file.
+The real backend behavior lives in `Backend.agent.md`, which loads the relevant instructions, skills, and patterns for the task.
 
 ---
 
 ## Customise for your project
 
-After pulling stack guidance, open `.github/copilot-instructions.md` and replace the placeholders:
+Keep `.github/copilot-instructions.md` minimal.
 
-```markdown
-- Language/runtime: .NET `{DotNetVersion}` -> e.g. .NET 9
-- Database: `{Database}` -> e.g. Postgres
-- Background jobs: `{JobRunner}` -> e.g. Hangfire
-```
+Use these project files to tailor behavior:
 
-For project-specific domain rules, edit `.github/instructions/Domain.Project.Instructions.md`.
+- optional project-specific domain guidance file if your repo defines one
 
 ---
 
@@ -177,10 +173,11 @@ Re-copy the relevant prompt above and paste it into AI chat again. It will overw
 3. Ask: _"What guidance do you have loaded?"_
 
 Copilot should mention `Backend.agent.md`.
-If stack guidance is pulled into the project, it should mention the instruction files too.
+If stack guidance is pulled into the project, it should also mention the relevant instruction, skill, and pattern files for the task.
 
 If it does not:
 
-- Confirm `~/.github/copilot-instructions.md` exists.
+- Confirm `~/.github/agents/Backend.agent.md` exists.
+- Confirm `{workspaceRoot}/.github/copilot-instructions.md` exists.
 - Confirm VS Code setting `github.copilot.chat.codeGeneration.useInstructionFiles` is `true`.
 - Confirm VS Code **1.93+** is installed.

@@ -8,7 +8,7 @@ applyTo: "**/*.Domain/**"
 
 ## Related Pattern Files
 
-- `patterns/CodePatterns.md`
+- `patterns/DomainPatterns.md`
 
 ## Folder Structure
 

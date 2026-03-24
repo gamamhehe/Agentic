@@ -19,13 +19,13 @@ Usually load:
 - `instructions/Domain.instructions.md`
 - `instructions/Naming.instructions.md`
 
-Load `instructions/Domain.Project.Instructions.md` when project-specific business rules matter.
+Load `instructions/Domain.Project.Instructions.md` when project-specific business rules matter and the file exists in the project.
 Load `instructions/Testing.instructions.md` when tests are in scope.
 
 ## Related patterns
 
 Use as reference:
-- `patterns/CodePatterns.md`
+- `patterns/DomainPatterns.md`
 - `patterns/EntityFrameworkCorePatterns.md` only when persistence implications must be understood
 
 ## Inputs

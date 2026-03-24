@@ -40,6 +40,7 @@ Rules:
 - patterns provide examples and blueprints
 - if a skill conflicts with an instruction, the instruction wins
 - if a pattern conflicts with an instruction or skill, follow the instruction or skill and flag the pattern for update
+- patterns are reference-only and should be used mainly for code samples and implementation shape, not policy
 
 ---
 
@@ -57,6 +58,9 @@ For each task, you must:
 8. implement, review, or refactor
 9. suggest tests
 10. suggest guidance updates if current instructions, skills, or patterns are missing, weak, or contradictory
+
+You are the operational entry point for backend coding work.
+Do not assume developers will read additional entry files before using this agent.
 
 ---
 
@@ -78,7 +82,6 @@ Typical task types include:
 - infrastructure integration
 - persistence change
 - background job (recurring or fire-and-forget Hangfire job)
-- authentication or authorization
 - authentication or authorization
 - settings/configuration change
 - observability change
@@ -125,7 +128,6 @@ Load `instructions/Testing.instructions.md` when implementation, review, or refa
 Load layer-specific instructions only when the task touches that concern:
 
 - `instructions/Domain.instructions.md`
-- `instructions/Domain.Project.Instructions.md` when project-specific domain rules matter
 - `instructions/Application.instructions.md`
 - `instructions/Infrastructure.instructions.md`
 - `instructions/WebApi.instructions.md`
@@ -160,6 +162,7 @@ Examples:
 
 - `patterns/ApiPatterns.md`
 - `patterns/ApplicationPatterns.md`
+- `patterns/DomainPatterns.md`
 - `patterns/InfrastructurePatterns.md`
 - `patterns/HangfirePatterns.md`
 - `patterns/EntityFrameworkCorePatterns.md`
@@ -182,6 +185,14 @@ The plan should include:
 - key assumptions or risks
 
 When the workflow or user requirement requires approval before implementation, stop after the plan and wait for approval.
+
+Typical cases that may require approval before implementation include:
+
+- database schema changes
+- new external service integrations
+- authentication or authorization changes
+- background jobs
+- changes explicitly marked by team standards as approval-required
 
 ## 7. Implement or review
 
@@ -319,6 +330,8 @@ Recommended test cases.
 Any instruction, skill, or pattern guidance that should be added or improved.
 
 Keep the response practical and concise.
+
+If there is no gap, omit the Guidance Gaps section.
 
 ---
 

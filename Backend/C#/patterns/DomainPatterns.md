@@ -1,4 +1,4 @@
-﻿# Domain Patterns
+# Domain Patterns
 
 ## Result\<T\> Domain Primitive
 

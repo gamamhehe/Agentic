@@ -33,7 +33,7 @@ Use as reference:
 
 - `patterns/InfrastructurePatterns.md`
 - `patterns/EntityFrameworkCorePatterns.md`
-- `patterns/CodePatterns.md`
+- `patterns/DomainPatterns.md`
 - `patterns/SettingsPatterns.md` when options are involved
 - `patterns/HangfirePatterns.md` when adding background jobs
 
