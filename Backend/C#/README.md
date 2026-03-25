@@ -1,4 +1,4 @@
-﻿# Backend Guidance C# / .NET
+# Backend Guidance C# / .NET
 
 AI guidance for C# / .NET projects using GitHub Copilot.
 
@@ -11,14 +11,14 @@ Stack: **C#**, **.NET**, **Entity Framework Core**
 This folder provides structured guidance that GitHub Copilot uses to assist with backend tasks.
 It follows a **two-tier model**:
 
-| Tier              | Content                                 | Where it lives                                                         | When                         |
-| ----------------- | --------------------------------------- | ---------------------------------------------------------------------- | ---------------------------- |
-| **User space**    | `Backend.agent.md` (main backend agent) | `~/.github/agents/`                                                    | Installed once per machine   |
-| **Project space** | `instructions/`, `skills/`, `patterns/` | `{repo}/.github/instructions/`, `.github/skills/`, `.github/patterns/` | Pulled per project on demand |
+| Tier              | Content                                          | Where it lives                                                         | When                         |
+| ----------------- | ------------------------------------------------ | ---------------------------------------------------------------------- | ---------------------------- |
+| **User space**    | `backend-engineer.agent.md` (main backend agent) | `~/.github/agents/`                                                    | Installed once per machine   |
+| **Project space** | `instructions/`, `skills/`, `patterns/`          | `{repo}/.github/instructions/`, `.github/skills/`, `.github/patterns/` | Pulled per project on demand |
 
 ---
 
-## Tier 1 Install the agent to user space (one-time)
+## Tier 1 — Install the agent to user space (one-time)
 
 This makes the Backend agent available in **every VS Code workspace** on this machine.
 
@@ -40,8 +40,8 @@ Please do the following steps for me:
    - agents/
 
 4. Copy these files from the cloned repo to user space:
-   - Backend/C#/agents/Backend.agent.md    ->  {userSpace}/agents/Backend.agent.md
-   - Frontend/Vue/agents/Frontend.agent.md  ->  {userSpace}/agents/Frontend.agent.md
+   - Backend/C#/agents/backend-engineer.agent.md  ->  {userSpace}/agents/Backend-Engineer.agent.md
+   - Frontend/Vue/agents/Frontend.agent.md         ->  {userSpace}/agents/Frontend.agent.md
 
 5. Delete the temporary clone directory completely.
 
@@ -53,13 +53,13 @@ Please do the following steps for me:
 ```
 ~/.github/
   agents/
-    Backend.agent.md
+    Backend-Engineer.agent.md
     Frontend.agent.md
 ```
 
 ---
 
-## Tier 2 Pull stack guidance into a project (per repo)
+## Tier 2 — Pull stack guidance into a project (per repo)
 
 Run this inside the specific project where you want full C# context.
 Copy the prompt below and paste it into any AI chat.
@@ -76,12 +76,12 @@ Please do the following steps for me:
    - .github/skills/
    - .github/patterns/
 
-3. Copy these files from the cloned repo:
-   - Backend/C#/instructions/*           ->  .github/instructions/
-   - Backend/C#/skills/*                 ->  .github/skills/
-   - Backend/C#/patterns/*               ->  .github/patterns/
+3. Copy these folders and files from the cloned repo:
+   - Backend/C#/instructions/*   ->  .github/instructions/   (preserve subfolders)
+   - Backend/C#/skills/*         ->  .github/skills/
+   - Backend/C#/patterns/*       ->  .github/patterns/
 
-4. Copy the file Backend/C#/copilot-instructions.md into .github/copilot-instructions.md as a minimal project entry file
+4. Copy the file Backend/C#/copilot-instructions.md into .github/copilot-instructions.md as a minimal project entry file.
 
 5. Delete the temporary clone directory completely.
 
@@ -95,35 +95,40 @@ Please do the following steps for me:
   .github/
     copilot-instructions.md
     instructions/
-      Application.instructions.md
-      Architecture.instructions.md
-      Domain.instructions.md
-      Infrastructure.instructions.md
-      Naming.instructions.md
-      Settings.instructions.md
-      Testing.instructions.md
-      WebApi.instructions.md
+      core/
+        01-architecture.instructions.md
+        02-naming.instructions.md
+      layers/
+        10-domain.instructions.md
+        11-application.instructions.md
+        12-infrastructure.instructions.md
+        13-webapi.instructions.md
+      cross-cutting/
+        20-configuration.instructions.md
+        21-testing.instructions.md
+      project/
+        domain-project.instructions.template.md
     skills/
-      AddRequestTracking.skill.md
-      ConfigureApplicationSettings.skill.md
-      CreateEndpoint.skill.md
-      CreateUseCase.skill.md
-      ImplementInfrastructureDependency.skill.md
-      RefactorBackendFeature.skill.md
-      ReviewBackendChange.skill.md
-      UpdateDomainModel.skill.md
-      WriteTests.skill.md
+      add-request-tracking.skill.md
+      build-endpoint.skill.md
+      build-infrastructure-dependency.skill.md
+      build-use-case.skill.md
+      configure-application-settings.skill.md
+      refactor-backend-feature.skill.md
+      review-backend-change.skill.md
+      update-domain-model.skill.md
+      write-tests.skill.md
     patterns/
-      ApiPatterns.md
-      ApplicationPatterns.md
-      DomainPatterns.md
-      EntityFrameworkCorePatterns.md
-      HangfirePatterns.md
-      InfrastructurePatterns.md
-      LogPatterns.md
-      SettingsPatterns.md
-      StructurePatterns.md
-      TestingPatterns.md
+      api.pattern.md
+      application.pattern.md
+      configuration.pattern.md
+      domain.pattern.md
+      entity-framework-core.pattern.md
+      hangfire.pattern.md
+      infrastructure.pattern.md
+      logging.pattern.md
+      structure.pattern.md
+      testing.pattern.md
 ```
 
 ---
@@ -146,7 +151,7 @@ Use natural language in Copilot Chat:
 | Refactor a feature        | _"Refactor the payment feature to follow clean architecture"_ |
 
 `.github/copilot-instructions.md` is only a lightweight project entry file.
-The real backend behavior lives in `Backend.agent.md`, which loads the relevant instructions, skills, and patterns for the task.
+The real backend behavior lives in `backend-engineer.agent.md`, which loads the relevant instructions, skills, and patterns for the task.
 
 ---
 
@@ -172,12 +177,14 @@ Re-copy the relevant prompt above and paste it into AI chat again. It will overw
 2. Open Copilot Chat.
 3. Ask: _"What guidance do you have loaded?"_
 
-Copilot should mention `Backend.agent.md`.
+Copilot should mention `backend-engineer.agent.md`.
 If stack guidance is pulled into the project, it should also mention the relevant instruction, skill, and pattern files for the task.
 
 If it does not:
 
-- Confirm `~/.github/agents/Backend.agent.md` exists.
+- Confirm `~/.github/agents/Backend-Engineer.agent.md` exists.
 - Confirm `{workspaceRoot}/.github/copilot-instructions.md` exists.
 - Confirm VS Code setting `github.copilot.chat.codeGeneration.useInstructionFiles` is `true`.
 - Confirm VS Code **1.93+** is installed.
+  | All skills | Same names (kebab-case) |
+  | All patterns | Same names (kebab-case with `.pattern.md` suffix) |
