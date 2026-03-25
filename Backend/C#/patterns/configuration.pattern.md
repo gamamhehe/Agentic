@@ -1,8 +1,6 @@
-# Settings Patterns
+# Configuration Patterns
 
 ## appsettings.json Structure
-
-All custom keys use **camelCase**.
 
 ```json
 {
@@ -26,13 +24,9 @@ All custom keys use **camelCase**.
 }
 ```
 
----
-
-## Strongly-Typed Options Classes
+## Strongly-Typed Options
 
 Location: `Application/Common/Options/`
-
-### ConnectionOptions
 
 ```csharp
 public class ConnectionOptions
@@ -45,8 +39,6 @@ public class ConnectionOptions
 }
 ```
 
-### ApplicationOptions
-
 ```csharp
 public class ApplicationOptions
 {
@@ -58,11 +50,9 @@ public class ApplicationOptions
 }
 ```
 
----
+## Registration
 
-## Registration Pattern
-
-File: `WebApi/Extensions/ServiceCollectionExtensions.cs`
+Bind in the relevant Infrastructure DI sub-method.
 
 ```csharp
 services.Configure<ConnectionOptions>(
@@ -72,9 +62,7 @@ services.Configure<ApplicationOptions>(
     configuration.GetSection(ApplicationOptions.SectionName));
 ```
 
----
-
-## Usage in Infrastructure
+## Usage
 
 ```csharp
 public class SomeService

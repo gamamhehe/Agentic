@@ -1,8 +1,6 @@
 # Entity Framework Core Patterns
 
-## Audit Fields Pattern
-
-Use a centralized persistence pattern to apply audit fields consistently for all auditable entities.
+## Audit Fields in SaveChangesAsync
 
 ```csharp
 public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
@@ -24,7 +22,6 @@ public override async Task<int> SaveChangesAsync(CancellationToken cancellationT
             case EntityState.Modified:
                 entry.Property(x => x.CreatedBy).IsModified = false;
                 entry.Property(x => x.CreatedAt).IsModified = false;
-
                 entry.Entity.UpdatedBy = userId;
                 entry.Entity.UpdatedAt = now;
                 break;
@@ -34,5 +31,26 @@ public override async Task<int> SaveChangesAsync(CancellationToken cancellationT
     var result = await base.SaveChangesAsync(cancellationToken);
     await DispatchDomainEvents();
     return result;
+}
+```
+
+## Entity Configuration
+
+Location: `Infrastructure/Persistence/Configurations/`
+
+```csharp
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+public class {Entity}Configuration : IEntityTypeConfiguration<{Entity}>
+{
+    public void Configure(EntityTypeBuilder<{Entity}> builder)
+    {
+        builder.ToTable("{Entity}s");
+        builder.HasKey(e => e.Id);
+        builder.Property(e => e.Name).IsRequired().HasMaxLength(200);
+        builder.Property(e => e.CreatedBy).IsRequired().HasMaxLength(200);
+        builder.Property(e => e.UpdatedBy).IsRequired().HasMaxLength(200);
+    }
 }
 ```

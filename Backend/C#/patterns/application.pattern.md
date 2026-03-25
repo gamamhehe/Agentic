@@ -22,12 +22,9 @@ public class {QueryName}QueryHandler : IRequestHandler<{QueryName}Query, {QueryN
 }
 ```
 
----
-
 ## FluentValidation Validator
 
-Auto-discovered by `ValidationBehavior` — do NOT invoke manually.
-File placed co-located with its command/query as `{Name}Validator.cs`.
+Auto-discovered by `ValidationBehavior` — never invoke manually.
 
 ```csharp
 using FluentValidation;
@@ -63,11 +60,9 @@ public class {CommandName}Validator : AbstractValidator<{CommandName}>
 }
 ```
 
----
-
 ## ValidationBehavior (MediatR Pipeline)
 
-File: `Application/Common/Behaviors/ValidationBehavior.cs` — registered once globally.
+File: `Application/Common/Behaviors/ValidationBehavior.cs`
 
 ```csharp
 using FluentValidation;

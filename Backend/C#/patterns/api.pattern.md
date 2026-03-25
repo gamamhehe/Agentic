@@ -1,8 +1,6 @@
-﻿# API Patterns
+# API Patterns
 
 ## Minimal API Endpoint with MediatR
-
-Route path lowercase. `WithTags` PascalCase. Use `TypedResults`. Declare `Produces` on every endpoint.
 
 ```csharp
 using MediatR;
@@ -26,12 +24,9 @@ public static class {DomainModel}Endpoints
 }
 ```
 
----
-
 ## OpenAPI / Scalar Setup
 
 File: `{ProjectName}.WebApi/Extensions/OpenApiExtensions.cs`
-Must be registered **after** `UseAuthentication()` / `UseAuthorization()`.
 
 ```csharp
 // Program.cs
@@ -79,12 +74,9 @@ public static class OpenApiExtensions
 }
 ```
 
----
-
 ## API Key Authentication Middleware
 
-Validates `X-Api-Key` header against `ApplicationOptions.ApiKey`.
-Location: `WebApi/Middleware/ApiKeyAuthenticationMiddleware.cs`
+File: `WebApi/Middleware/ApiKeyAuthenticationMiddleware.cs`
 
 ```csharp
 public class ApiKeyAuthenticationMiddleware
@@ -118,12 +110,9 @@ app.UseAuthorization();
 app.UseOpenApiPipeline();                            // after UseAuthorization
 ```
 
----
-
 ## AddApiHeaderParameter — OpenAPI Operation Transformer
 
-Injects the `X-Api-Key` required header into every OpenAPI operation so Scalar shows it.
-Location: `WebApi/Extensions/AddApiHeaderParameter.cs`
+File: `WebApi/Extensions/AddApiHeaderParameter.cs`
 
 ```csharp
 using Microsoft.AspNetCore.OpenApi;
@@ -147,14 +136,4 @@ public class AddApiHeaderParameter : IOpenApiOperationTransformer
         return Task.CompletedTask;
     }
 }
-```
-
-Register in `OpenApiExtensions.cs`:
-
-```csharp
-services.AddOpenApi(options =>
-{
-    options.AddOperationTransformer<AddApiHeaderParameter>();
-    // ... document transformer
-});
 ```

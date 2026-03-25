@@ -39,8 +39,6 @@ public class {QueryName}QueryHandlerTests
 }
 ```
 
----
-
 ## Unit Test — FluentValidation Validator
 
 ```csharp
@@ -65,8 +63,6 @@ public class {CommandName}ValidatorTests
     }
 }
 ```
-
----
 
 ## Integration Test — API Endpoint
 
