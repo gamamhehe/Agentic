@@ -2,49 +2,54 @@
 
 ## When to use
 
-Adding or updating persistence, caching, storage, external API integration, telemetry, or background jobs.
+Adding or updating persistence, caching, file storage, external API integration, telemetry, or background job infrastructure.
 
-## Instructions to load
+## Load this additional guidance
 
-- `instructions/core/01-architecture.instructions.md`
-- `instructions/core/02-naming.instructions.md`
+Assume `@Backend-Engineer` has already loaded the core backend instructions.
+
 - `instructions/layers/12-infrastructure.instructions.md`
+- `instructions/layers/11-application.instructions.md` when interfaces or application contracts change
+- `instructions/cross-cutting/20-configuration.instructions.md` when config changes are needed
 - `instructions/cross-cutting/21-testing.instructions.md`
-- `instructions/layers/11-application.instructions.md` — when new interfaces needed
-- `instructions/cross-cutting/20-configuration.instructions.md` — when config changes needed
+- `instructions/project/team-standards.instructions.md` when approval gates or platform rules exist
 
 ## Patterns
 
 - `patterns/infrastructure.pattern.md`
-- `patterns/entity-framework-core.pattern.md` — for EF Core work
-- `patterns/hangfire.pattern.md` — for background jobs
-- `patterns/configuration.pattern.md` — for options binding
+- `patterns/entity-framework-core.pattern.md` for EF Core work
+- `patterns/hangfire.pattern.md` for background jobs
+- `patterns/configuration.pattern.md` for options and binding
 
 ## Inputs
 
-- Interface or technical concern to implement
-- Persistence or external service details
-- Configuration needs
-- Resiliency or observability needs
+- dependency or technical concern to implement
+- persistence or external service details
+- configuration needs
+- resiliency or observability needs
 
 ## Steps
 
-1. Confirm implementation belongs in Infrastructure
-2. Implement interface or component in correct folder
-3. Register dependency in Infrastructure DI (new sub-method if new concern)
-4. Keep Application free from Infrastructure types
-5. Add configuration/options binding if needed
-6. Consider logging, telemetry, retries, error mapping
-7. For Hangfire jobs: place in `Services/HangfireJobService/`, use `[AutomaticRetry]`, use `IServiceScopeFactory` for scoped deps
-8. Suggest integration tests or targeted unit tests
+1. Confirm the implementation belongs in Infrastructure.
+2. Define or reuse the Application abstraction that Infrastructure will implement.
+3. Implement the dependency in the correct Infrastructure location.
+4. Register it through the correct DI concern in `DependencyInjection.cs`.
+5. Add strongly-typed configuration when required.
+6. Add logging, telemetry, retries, or error mapping intentionally.
+7. Stop for approval before new external integrations, database schema work, or background jobs if the task is not already explicitly approved.
+8. Suggest integration tests or focused unit tests.
+
+## Output
+
+- implemented dependency summary
+- interface and DI changes
+- config changes
+- risk notes and test recommendations
 
 ## Checklist
 
 - [ ] Implementation stays in Infrastructure
-- [ ] Application depends only on abstraction
-- [ ] DI registration added
-- [ ] External failures mapped intentionally
-- [ ] Configuration strongly typed when needed
-- [ ] Hangfire: `[AutomaticRetry]`, correct variant (simple vs scoped)
-- [ ] Recurring jobs registered via `UseHangfireJobs`
-- [ ] Fire-and-forget via `IBackgroundJobClient`
+- [ ] Application depends only on abstractions
+- [ ] DI registration is explicit and isolated by concern
+- [ ] External failures are mapped intentionally
+- [ ] Tests or verification steps are suggested

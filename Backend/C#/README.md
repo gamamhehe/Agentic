@@ -1,96 +1,105 @@
-# Backend Guidance C# / .NET
+# Backend Guidance for C# / .NET
 
-AI guidance for C# / .NET projects using GitHub Copilot.
+Structured GitHub Copilot guidance for backend engineering in C# and .NET projects.
 
-Stack: **C#**, **.NET**, **Entity Framework Core**
+Stack:
 
----
-
-## What is this?
-
-This folder provides structured guidance that GitHub Copilot uses to assist with backend tasks.
-It follows a **two-tier model**:
-
-| Tier              | Content                                          | Where it lives                                                         | When                         |
-| ----------------- | ------------------------------------------------ | ---------------------------------------------------------------------- | ---------------------------- |
-| **User space**    | `backend-engineer.agent.md` (main backend agent) | `~/.github/agents/`                                                    | Installed once per machine   |
-| **Project space** | `instructions/`, `skills/`, `patterns/`          | `{repo}/.github/instructions/`, `.github/skills/`, `.github/patterns/` | Pulled per project on demand |
+- C#
+- .NET
+- Entity Framework Core
 
 ---
 
-## Tier 1 — Install the agent to user space (one-time)
+## Purpose
 
-This makes the Backend agent available in **every VS Code workspace** on this machine.
+This folder gives GitHub Copilot a backend operating model instead of only ad hoc prompts.
 
-Copy the prompt below and paste it into any AI chat (Copilot, ChatGPT, Claude, etc.).
-The AI will clone the repo, copy the agent file, and clean up.
+The backend guidance is designed around one rule:
 
-```
-I want to set up AI guidance from https://github.com/gamamhehe/Agentic.git into my VS Code user space so it applies to all my workspaces.
+- the backend agent is the main working surface
 
-Please do the following steps for me:
+Instructions, skills, and patterns exist to support that agent.
+
+---
+
+## Guidance Model
+
+This backend guidance follows a two-tier setup.
+
+| Tier | Content | Location | Purpose |
+| --- | --- | --- | --- |
+| User space | `backend-engineer.agent.md` | `~/.github/agents/` | Makes the backend agent available across workspaces |
+| Project space | `copilot-instructions.md`, `instructions/`, `skills/`, `patterns/` | `{workspaceRoot}/.github/` | Gives repo-specific backend context |
+
+### Backend hierarchy
+
+Use backend guidance in this order:
+
+1. instructions
+2. skills
+3. patterns
+
+Patterns are examples only.
+They are not policy.
+
+---
+
+## Tier 1 - Install the backend agent once
+
+Copy this prompt into an AI chat when you want the backend agent installed into GitHub user space:
+
+```text
+I want to set up backend GitHub Copilot guidance from https://github.com/gamamhehe/Agentic.git into my VS Code user space so it is available in every workspace.
+
+Please do the following:
 
 1. Clone the repo with a shallow clone (--depth 1) into a temporary directory.
-
 2. Detect my OS:
-   - Windows: user space is %USERPROFILE%\.github\
-   - Linux / macOS: user space is ~/.github/
-
-3. Create the following folder in user space if it does not exist:
-   - agents/
-
-4. Copy these files from the cloned repo to user space:
-   - Backend/C#/agents/backend-engineer.agent.md  ->  {userSpace}/agents/Backend-Engineer.agent.md
-   - Frontend/Vue/agents/Frontend.agent.md         ->  {userSpace}/agents/Frontend.agent.md
-
-5. Delete the temporary clone directory completely.
-
-6. Show me the final file tree under my user space .github/ folder so I can confirm everything is in place.
+   - Windows: %USERPROFILE%\\.github\\
+   - Linux/macOS: ~/.github/
+3. Create {userSpace}/agents/ if it does not exist.
+4. Copy:
+   - Backend/C#/agents/backend-engineer.agent.md -> {userSpace}/agents/Backend-Engineer.agent.md
+5. Delete the temporary clone.
+6. Show me the final tree under {userSpace}/.github/.
 ```
 
-### Result in user space
+Expected result:
 
-```
+```text
 ~/.github/
   agents/
     Backend-Engineer.agent.md
-    Frontend.agent.md
 ```
 
 ---
 
-## Tier 2 — Pull stack guidance into a project (per repo)
+## Tier 2 - Pull backend project guidance into a repo
 
-Run this inside the specific project where you want full C# context.
-Copy the prompt below and paste it into any AI chat.
+Copy this prompt into an AI chat when you want backend guidance added to a specific project:
 
-```
-I want to pull the C# / .NET stack guidance from https://github.com/gamamhehe/Agentic.git into this project so GitHub Copilot has full context for this workspace.
+```text
+I want to pull the backend C# / .NET GitHub Copilot guidance from https://github.com/gamamhehe/Agentic.git into this project.
 
-Please do the following steps for me:
+Please do the following:
 
 1. Clone the repo with a shallow clone (--depth 1) into a temporary directory.
-
-2. Create the following folders in the current workspace root if they do not exist:
+2. Create these folders in the current workspace root if they do not exist:
    - .github/instructions/
    - .github/skills/
    - .github/patterns/
-
-3. Copy these folders and files from the cloned repo:
-   - Backend/C#/instructions/*   ->  .github/instructions/   (preserve subfolders)
-   - Backend/C#/skills/*         ->  .github/skills/
-   - Backend/C#/patterns/*       ->  .github/patterns/
-
-4. Copy the file Backend/C#/copilot-instructions.md into .github/copilot-instructions.md as a minimal project entry file.
-
-5. Delete the temporary clone directory completely.
-
-6. Show me the final file tree under .github/ so I can confirm everything is in place.
+3. Copy:
+   - Backend/C#/copilot-instructions.md -> .github/copilot-instructions.md
+   - Backend/C#/instructions/* -> .github/instructions/   (preserve subfolders)
+   - Backend/C#/skills/* -> .github/skills/
+   - Backend/C#/patterns/* -> .github/patterns/
+4. Delete the temporary clone.
+5. Show me the final tree under .github/.
 ```
 
-### Result in project space
+Expected result:
 
-```
+```text
 {workspaceRoot}/
   .github/
     copilot-instructions.md
@@ -98,16 +107,17 @@ Please do the following steps for me:
       core/
         01-architecture.instructions.md
         02-naming.instructions.md
+      cross-cutting/
+        20-configuration.instructions.md
+        21-testing.instructions.md
       layers/
         10-domain.instructions.md
         11-application.instructions.md
         12-infrastructure.instructions.md
         13-webapi.instructions.md
-      cross-cutting/
-        20-configuration.instructions.md
-        21-testing.instructions.md
       project/
         domain-project.instructions.template.md
+        team-standards.instructions.template.md
     skills/
       add-request-tracking.skill.md
       build-endpoint.skill.md
@@ -116,6 +126,7 @@ Please do the following steps for me:
       configure-application-settings.skill.md
       refactor-backend-feature.skill.md
       review-backend-change.skill.md
+      review-pull-request.skill.md
       update-domain-model.skill.md
       write-tests.skill.md
     patterns/
@@ -133,58 +144,93 @@ Please do the following steps for me:
 
 ---
 
-## How to use
+## How to work with it
 
-Once the agent (Tier 1) is in user space, Copilot is ready for backend tasks in any workspace.
-Once the stack guidance (Tier 2) is pulled into a project, Copilot has full context for that repo.
+Once the agent is installed and the project files are present:
 
-Use natural language in Copilot Chat:
+1. Ask Copilot for a backend task in natural language.
+2. Let `@Backend-Engineer` classify the task.
+3. Let the agent decide which instructions and skills to load.
+4. Use project instructions for domain-specific or team-specific refinements.
 
-| Task                      | What to say                                                   |
-| ------------------------- | ------------------------------------------------------------- |
-| Create a new API endpoint | _"Create an endpoint for GET /products"_                      |
-| Add a use case / command  | _"Create a use case to place an order"_                       |
-| Update the domain model   | _"Add a Status property to the Order entity"_                 |
-| Implement infrastructure  | _"Implement the IEmailSender with SendGrid"_                  |
-| Review a change           | _"Review this change for architecture issues"_                |
-| Write tests               | _"Write tests for the CreateOrderUseCase"_                    |
-| Refactor a feature        | _"Refactor the payment feature to follow clean architecture"_ |
+Examples:
 
-`.github/copilot-instructions.md` is only a lightweight project entry file.
-The real backend behavior lives in `backend-engineer.agent.md`, which loads the relevant instructions, skills, and patterns for the task.
+| Task | Example prompt |
+| --- | --- |
+| Build endpoint | `Create an endpoint for GET /products` |
+| Build use case | `Create a use case to place an order` |
+| Update domain | `Add a Status property to the Order entity` |
+| Infrastructure | `Implement IEmailSender with SendGrid` |
+| Review local change | `Review this backend change for architecture and testing issues` |
+| Review PR | `Review this pull request for regressions and merge risk` |
+| Write tests | `Write tests for CreateOrderUseCase` |
+| Refactor | `Refactor the payment feature to follow clean architecture` |
 
 ---
 
-## Customise for your project
+## Available backend files
+
+### Agent
+
+- `agents/backend-engineer.agent.md`
+
+### Instructions
+
+- `instructions/core/` for architecture and naming rules
+- `instructions/layers/` for layer-specific constraints
+- `instructions/cross-cutting/` for configuration and testing
+- `instructions/project/` for project domain and team standards
+
+### Skills
+
+- `build-endpoint.skill.md`
+- `build-use-case.skill.md`
+- `update-domain-model.skill.md`
+- `build-infrastructure-dependency.skill.md`
+- `configure-application-settings.skill.md`
+- `add-request-tracking.skill.md`
+- `write-tests.skill.md`
+- `refactor-backend-feature.skill.md`
+- `review-backend-change.skill.md`
+- `review-pull-request.skill.md`
+
+### Patterns
+
+Patterns are implementation references only.
+Use them to shape code, not to define policy.
+
+---
+
+## Project customization
 
 Keep `.github/copilot-instructions.md` minimal.
 
-Use these project files to tailor behavior:
+Prefer project-specific guidance in:
 
-- optional project-specific domain guidance file if your repo defines one
+- `.github/instructions/project/domain-project.instructions.md`
+- `.github/instructions/project/team-standards.instructions.md`
 
----
-
-## Update guidance
-
-Re-copy the relevant prompt above and paste it into AI chat again. It will overwrite with the latest version.
+Use `domain-project` for business and model knowledge.
+Use `team-standards` for review strictness, testing floor, and approval-required changes.
 
 ---
 
-## Verify
+## Verification
 
-1. Open VS Code in any workspace.
+After installing:
+
+1. Open VS Code in a repo that has the backend project guidance.
 2. Open Copilot Chat.
-3. Ask: _"What guidance do you have loaded?"_
+3. Ask: `What backend guidance do you have loaded?`
 
-Copilot should mention `backend-engineer.agent.md`.
-If stack guidance is pulled into the project, it should also mention the relevant instruction, skill, and pattern files for the task.
+Expected behavior:
+
+- Copilot identifies `Backend-Engineer` as the backend working surface
+- Copilot mentions only the relevant instructions, skills, and patterns for the task
 
 If it does not:
 
-- Confirm `~/.github/agents/Backend-Engineer.agent.md` exists.
-- Confirm `{workspaceRoot}/.github/copilot-instructions.md` exists.
-- Confirm VS Code setting `github.copilot.chat.codeGeneration.useInstructionFiles` is `true`.
-- Confirm VS Code **1.93+** is installed.
-  | All skills | Same names (kebab-case) |
-  | All patterns | Same names (kebab-case with `.pattern.md` suffix) |
+- confirm `~/.github/agents/Backend-Engineer.agent.md` exists
+- confirm `.github/copilot-instructions.md` exists in the project
+- confirm `github.copilot.chat.codeGeneration.useInstructionFiles` is enabled
+- confirm VS Code is recent enough to support instruction files

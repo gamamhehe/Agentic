@@ -2,42 +2,49 @@
 
 ## When to use
 
-Reviewing a backend change, pull request, or generated code.
+Reviewing a local backend change, generated code, staged patch, or a focused code slice before or during implementation.
 
-## Instructions to load
+## Load this additional guidance
 
-- `instructions/core/01-architecture.instructions.md`
-- `instructions/core/02-naming.instructions.md`
+Assume `@Backend-Engineer` has already loaded the core backend instructions.
+
 - `instructions/cross-cutting/21-testing.instructions.md`
-- Layer instructions for touched layers
+- layer instructions for touched layers
+- `instructions/project/team-standards.instructions.md` when local review strictness exists
 
 ## Patterns
 
 Only patterns relevant to touched code.
 
+## Inputs
+
+- changed files or code slice
+- intended behavior
+- known risky areas
+- whether the change is generated, manual, or mixed
+
 ## Steps
 
-1. Identify impacted layers and intent
-2. Review architecture boundaries first
-3. Review correctness and behavior risks
-4. Review naming and structure consistency
-5. Review validation, authorization, error handling
-6. Review observability when relevant
-7. Review test coverage and missing cases
-8. Separate critical issues from optional improvements
+1. Identify the intent and the touched layers.
+2. Review correctness and architecture before style.
+3. Check naming, structure, validation, and error handling.
+4. Check async behavior, nullability, and data access assumptions when relevant.
+5. Check whether tests are missing for changed behavior.
+6. Separate blocking issues from advisory cleanup.
+7. Flag missing guidance when the review reveals repeated confusion.
 
 ## Output
 
-- Prioritized findings with severity
-- Explanation of why each matters
-- Concrete fixes
-- Missing test suggestions
-- Guidance gap flags
+- prioritized findings with severity
+- why each finding matters
+- concrete fix direction
+- missing test suggestions
+- guidance gaps when present
 
 ## Checklist
 
-- [ ] Architecture violations called out
-- [ ] Correctness prioritized
-- [ ] Review is concrete, not vague
-- [ ] Test gaps identified
-- [ ] Missing guidance flagged
+- [ ] Correctness is prioritized
+- [ ] Architecture violations are called out
+- [ ] Findings are concrete, not vague
+- [ ] Test gaps are identified
+- [ ] Guidance gaps are flagged when relevant

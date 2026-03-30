@@ -4,12 +4,13 @@
 
 Adding or updating `appsettings` structure, options classes, or configuration binding.
 
-## Instructions to load
+## Load this additional guidance
 
-- `instructions/core/01-architecture.instructions.md`
-- `instructions/core/02-naming.instructions.md`
+Assume `@Backend-Engineer` has already loaded the core backend instructions.
+
 - `instructions/cross-cutting/20-configuration.instructions.md`
-- `instructions/cross-cutting/21-testing.instructions.md` — when config tests in scope
+- `instructions/cross-cutting/21-testing.instructions.md` when config behavior is tested
+- `instructions/project/team-standards.instructions.md` when local config or secret-handling rules exist
 
 ## Patterns
 
@@ -17,24 +18,31 @@ Adding or updating `appsettings` structure, options classes, or configuration bi
 
 ## Inputs
 
-- Setting name and purpose
-- Target root section (`connection` or `application`)
-- Options class owner
-- How the setting is consumed
+- setting name and purpose
+- target section
+- options class owner
+- where the setting is consumed
 
 ## Steps
 
-1. Decide `connection` or `application` section
-2. Update `appsettings` with camelCase keys
-3. Add or update strongly-typed options class
-4. Bind via `IOptions<T>` registration
-5. Ensure secrets not committed
-6. Note where setting is consumed
-7. Suggest verification or tests
+1. Decide whether the setting belongs under `connection` or `application`.
+2. Update `appsettings` with camelCase keys.
+3. Add or update strongly-typed options classes.
+4. Bind configuration through `IOptions<T>` or the local standard.
+5. Keep secrets out of committed files.
+6. Note where the setting is consumed and how it affects behavior.
+7. Suggest verification steps or tests when config changes behavior.
+
+## Output
+
+- setting summary
+- section and options class used
+- secret-handling notes
+- verification or test notes
 
 ## Checklist
 
-- [ ] Root section correct
-- [ ] Key casing camelCase
-- [ ] Strongly-typed options used
-- [ ] Secrets handled safely
+- [ ] Root section is correct
+- [ ] Key casing is camelCase
+- [ ] Strongly-typed options are used
+- [ ] Secrets are handled safely

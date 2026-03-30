@@ -2,15 +2,16 @@
 
 ## When to use
 
-Adding endpoint-level telemetry, request logging, or Application Insights enrichment.
+Adding endpoint-level telemetry, request logging, Application Insights enrichment, or request tracking metadata.
 
-## Instructions to load
+## Load this additional guidance
 
-- `instructions/core/01-architecture.instructions.md`
-- `instructions/core/02-naming.instructions.md`
+Assume `@Backend-Engineer` has already loaded the core backend instructions.
+
 - `instructions/layers/12-infrastructure.instructions.md`
 - `instructions/layers/13-webapi.instructions.md`
-- `instructions/cross-cutting/21-testing.instructions.md` — when tests in scope
+- `instructions/cross-cutting/21-testing.instructions.md` when tests are in scope
+- `instructions/project/team-standards.instructions.md` when project observability rules exist
 
 ## Patterns
 
@@ -19,25 +20,32 @@ Adding endpoint-level telemetry, request logging, or Application Insights enrich
 
 ## Inputs
 
-- Endpoint name, epic name, feature name
-- Whether request/response body capture needed
-- Sensitive data restrictions
+- endpoint or feature name
+- telemetry goals
+- whether request or response bodies need to be captured
+- sensitive data constraints
 
 ## Steps
 
-1. Confirm feature requires tracked telemetry
-2. Telemetry implementation in Infrastructure; pipeline wiring in WebApi
-3. Verify Application Insights registration in Infrastructure DI
-4. Verify request logging middleware order in WebApi pipeline
-5. Wire `WithApiTracking(...)` endpoint metadata and filter
-6. Capture only needed telemetry
-7. Avoid logging secrets or sensitive data
-8. Suggest tests for middleware order and telemetry behavior
+1. Confirm tracking is required and what decision it should support.
+2. Keep implementation in Infrastructure and pipeline wiring in WebApi.
+3. Verify Application Insights and request tracking services are registered through Infrastructure DI.
+4. Add endpoint metadata or filters only where tracking is required.
+5. Capture only the minimum useful telemetry.
+6. Avoid logging secrets, tokens, PII, or large payloads by default.
+7. Suggest tests or verification steps for middleware order and telemetry behavior.
+
+## Output
+
+- summary of what was tracked
+- files or layers affected
+- sensitive-data decisions
+- tests or verification steps
 
 ## Checklist
 
-- [ ] WebApi only wires pipeline
-- [ ] Infrastructure owns implementation
-- [ ] Only tracked endpoints capture request bodies
-- [ ] No sensitive data logged
-- [ ] Middleware order correct
+- [ ] WebApi only wires the pipeline
+- [ ] Infrastructure owns the implementation
+- [ ] Tracking is intentional, not global by accident
+- [ ] Sensitive data is protected
+- [ ] Verification or tests are suggested

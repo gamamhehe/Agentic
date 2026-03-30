@@ -4,39 +4,48 @@
 
 Adding or updating tests for domain, application, integration, or API behavior.
 
-## Instructions to load
+## Load this additional guidance
 
-- `instructions/core/02-naming.instructions.md`
+Assume `@Backend-Engineer` has already loaded the core backend instructions.
+
 - `instructions/cross-cutting/21-testing.instructions.md`
-- Layer instructions matching code under test
+- layer instructions matching the code under test
+- `instructions/project/team-standards.instructions.md` when local testing floors or naming rules exist
 
 ## Patterns
 
 - `patterns/testing.pattern.md`
-- `patterns/application.pattern.md` — for handler test examples
-- `patterns/api.pattern.md` — for integration test examples
+- `patterns/application.pattern.md` for handler tests
+- `patterns/api.pattern.md` for integration or endpoint tests
 
 ## Inputs
 
-- Subject under test
-- Behavior to verify
-- Test level (unit or integration)
-- Dependencies to mock or keep real
+- subject under test
+- behavior to verify
+- target test level
+- dependencies to mock or keep real
 
 ## Steps
 
-1. Choose correct test level
-2. Place test in correct test project
-3. Name class and methods using conventions
-4. Keep setup minimal and deterministic
-5. Mock only isolated dependencies
-6. Cover success, failure, and edge cases
-7. Avoid brittle assertions tied to incidental details
+1. Choose the correct test level for the behavior and risk.
+2. Place the test in the correct test project.
+3. Follow test naming conventions consistently.
+4. Keep setup minimal, deterministic, and easy to read.
+5. Mock only what should be isolated.
+6. Cover success, failure, and edge cases that matter to the change.
+7. Avoid brittle assertions tied to incidental details.
+
+## Output
+
+- chosen test level
+- scenarios covered
+- dependencies mocked or kept real
+- remaining test gaps if any
 
 ## Checklist
 
-- [ ] Test level appropriate
-- [ ] Naming consistent
-- [ ] Tests deterministic
-- [ ] Assertions meaningful
-- [ ] Regression risk covered
+- [ ] Test level is appropriate
+- [ ] Naming is consistent
+- [ ] Tests are deterministic
+- [ ] Assertions are meaningful
+- [ ] Regression risk is covered

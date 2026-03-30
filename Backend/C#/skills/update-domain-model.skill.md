@@ -2,41 +2,49 @@
 
 ## When to use
 
-Changing entities, value objects, enums, or domain rules.
+Changing entities, value objects, enums, aggregates, or domain rules.
 
-## Instructions to load
+## Load this additional guidance
 
-- `instructions/core/01-architecture.instructions.md`
-- `instructions/core/02-naming.instructions.md`
+Assume `@Backend-Engineer` has already loaded the core backend instructions.
+
 - `instructions/layers/10-domain.instructions.md`
-- `instructions/project/*.instructions.md` — when project-specific rules exist
-- `instructions/cross-cutting/21-testing.instructions.md` — when tests in scope
+- `instructions/project/domain-project.instructions.md` when project domain rules exist
+- `instructions/project/team-standards.instructions.md` when approval or modeling rules exist
+- `instructions/cross-cutting/21-testing.instructions.md` when tests are in scope
 
 ## Patterns
 
 - `patterns/domain.pattern.md`
-- `patterns/entity-framework-core.pattern.md` — only when persistence impact matters
+- `patterns/entity-framework-core.pattern.md` only when persistence impact matters
 
 ## Inputs
 
-- Business concept
-- Required properties
-- Invariants or rules
-- Relationships to other domain types
-- Persistence impact if known
+- business concept
+- required properties
+- invariants or rules
+- relationships to other domain types
+- persistence impact if known
 
 ## Steps
 
-1. Confirm change belongs in Domain — not Application, Infrastructure, or WebApi
-2. Update domain type and invariants
-3. Keep framework and persistence concerns out
-4. Validate relationships with existing entities, value objects, enums
-5. Note downstream impact on handlers, EF Core config, API contracts
-6. Suggest unit tests for invariants and behavior
+1. Confirm the change belongs in Domain, not Application, Infrastructure, or WebApi.
+2. Update the domain type and make rules explicit.
+3. Keep framework, transport, and persistence concerns out of Domain.
+4. Validate how the change affects relationships and invariants.
+5. Note downstream impact on handlers, persistence, and API contracts.
+6. Suggest unit tests for invariants and behavior.
+
+## Output
+
+- domain change summary
+- invariants or business rules affected
+- downstream impact notes
+- test recommendations
 
 ## Checklist
 
 - [ ] Domain remains framework-agnostic
-- [ ] No DTOs or EF Core mappings in Domain
-- [ ] Business rules explicit
-- [ ] Project-specific rules respected
+- [ ] No DTOs or EF Core mappings leak into Domain
+- [ ] Business rules are explicit
+- [ ] Project-specific domain rules are respected

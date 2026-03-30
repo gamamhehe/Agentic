@@ -4,14 +4,16 @@
 
 Adding or updating an Application command, query, handler, or validator.
 
-## Instructions to load
+## Load this additional guidance
 
-- `instructions/core/01-architecture.instructions.md`
-- `instructions/core/02-naming.instructions.md`
+Assume `@Backend-Engineer` has already loaded the core backend instructions.
+
 - `instructions/layers/11-application.instructions.md`
+- `instructions/layers/10-domain.instructions.md` when domain concepts or rules are involved
+- `instructions/layers/12-infrastructure.instructions.md` when new interfaces are needed
 - `instructions/cross-cutting/21-testing.instructions.md`
-- `instructions/layers/10-domain.instructions.md` — when domain concepts involved
-- `instructions/layers/12-infrastructure.instructions.md` — when new interfaces needed
+- `instructions/project/domain-project.instructions.md` when project domain rules exist
+- `instructions/project/team-standards.instructions.md` when local completion rules exist
 
 ## Patterns
 
@@ -19,27 +21,34 @@ Adding or updating an Application command, query, handler, or validator.
 
 ## Inputs
 
-- Feature name
-- Read or write intent
-- Request fields
-- Expected result shape
-- Validation rules
-- Infrastructure interfaces needed
+- feature name
+- read or write intent
+- request fields
+- expected result shape
+- validation rules
+- infrastructure interfaces needed
 
 ## Steps
 
-1. Decide command or query
-2. Place request, handler, validator in correct feature folder
-3. Define response DTOs in feature `Dtos/` folder when needed
-4. Add FluentValidation rules
-5. Depend only on Application interfaces — not Infrastructure implementations
-6. Handler focused on orchestration — not transport or persistence details
-7. Suggest unit tests for handler and validator
+1. Decide whether the use case is a command or query.
+2. Place request, handler, and validator in the correct feature folder.
+3. Define response DTOs in the feature `Dtos/` folder when needed.
+4. Add FluentValidation rules for all externally supplied input.
+5. Keep the handler focused on orchestration, not transport or infrastructure details.
+6. Use Application interfaces only; do not depend on Infrastructure implementations.
+7. Suggest handler and validator tests when behavior is non-trivial.
+
+## Output
+
+- use case summary
+- command or query classification
+- interfaces introduced or reused
+- validation and test recommendations
 
 ## Checklist
 
-- [ ] Command/query naming correct
+- [ ] Command or query naming is correct
 - [ ] Handler does not call another handler
-- [ ] Validator co-located
-- [ ] No Infrastructure namespace references
-- [ ] DTO ownership correct
+- [ ] Validator is co-located
+- [ ] Infrastructure dependencies are abstracted
+- [ ] DTO ownership stays in Application

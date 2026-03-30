@@ -4,13 +4,14 @@
 
 Adding or updating an HTTP endpoint in the WebApi layer.
 
-## Instructions to load
+## Load this additional guidance
 
-- `instructions/core/01-architecture.instructions.md`
-- `instructions/core/02-naming.instructions.md`
+Assume `@Backend-Engineer` has already loaded the core backend instructions.
+
 - `instructions/layers/13-webapi.instructions.md`
 - `instructions/layers/11-application.instructions.md`
-- `instructions/cross-cutting/21-testing.instructions.md` — when tests in scope
+- `instructions/cross-cutting/21-testing.instructions.md` when tests are in scope
+- `instructions/project/team-standards.instructions.md` when local API conventions or approval rules exist
 
 ## Patterns
 
@@ -19,28 +20,35 @@ Adding or updating an HTTP endpoint in the WebApi layer.
 
 ## Inputs
 
-- Feature name, route, HTTP method
-- Request model or parameters
-- Expected response model
-- Authorization requirements
-- Error cases
-- Whether a command or query is needed
+- feature name
+- route path and HTTP method
+- request model or route/query parameters
+- expected response model
+- authorization requirements
+- expected error cases
 
 ## Steps
 
-1. Confirm endpoint belongs in WebApi; business logic belongs outside
-2. Define or identify the Application command/query the endpoint calls
-3. Create or update endpoint group and route
-4. Apply naming, route casing, tags, and OpenAPI metadata
-5. Return `TypedResults`; declare `.Produces<T>()` and `.ProducesProblem()`
-6. Validation handled in Application, not in endpoint
-7. Add authorization and API key requirements when relevant
-8. Suggest tests: success, validation failure, not-found, unauthorized
+1. Confirm the behavior belongs in WebApi plus Application, not in the endpoint itself.
+2. Define or identify the command or query the endpoint should call.
+3. Create or update the endpoint group and route using established naming.
+4. Apply OpenAPI metadata, response declarations, and endpoint naming.
+5. Return `TypedResults` and keep transport logic thin.
+6. Keep validation in Application, not in endpoint handlers.
+7. Stop for approval before introducing new auth or approval-gated behavior.
+8. Suggest API and application tests for the success path and failure paths.
+
+## Output
+
+- endpoint summary
+- application contract used
+- auth and validation notes
+- recommended tests
 
 ## Checklist
 
-- [ ] Endpoint is thin — no business logic
-- [ ] Route path lowercase, tags PascalCase
-- [ ] `TypedResults` used
-- [ ] OpenAPI metadata declared
-- [ ] Command/query invoked via MediatR
+- [ ] Endpoint is thin
+- [ ] Route path is lowercase
+- [ ] Tags and endpoint names follow conventions
+- [ ] `TypedResults` and OpenAPI metadata are used
+- [ ] Business logic stays outside WebApi
