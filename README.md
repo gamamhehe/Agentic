@@ -1,20 +1,17 @@
 # Agentic
 
-Reusable GitHub Copilot guidance packs organized by stack.
+Reusable AI guidance packs organized by stack and tool.
 
-The backend C# pack in this repository is aligned to the official Copilot artifact model:
+The C# backend guidance now has two tool-specific variants:
 
-- custom agents
-- repository and path-specific instructions
-- agent skills
-- reusable prompt files
-- reference patterns
+- GitHub Copilot
+- Codex
 
 ## Stacks
 
 | Stack | Folder | Guide |
 | --- | --- | --- |
-| C# / .NET | `Backend/C#/` | [Backend README](Backend/C%23/README.md) |
+| C# / .NET | `Backend/C#/` | [C# chooser README](Backend/C%23/README.md) |
 | Vue + Tailwind | `Frontend/Vue/` | [Frontend README](Frontend/Vue/README.md) |
 
 ## Repository layout
@@ -22,12 +19,8 @@ The backend C# pack in this repository is aligned to the official Copilot artifa
 ```text
 Backend/
   C#/
-    agents/
-    instructions/
-    skills/
-    prompts/
-    patterns/
-    copilot-instructions.md
+    GithubCopilot/
+    Codex/
 Frontend/
   Vue/
     agents/
@@ -37,20 +30,16 @@ Frontend/
     copilot-instructions.md
 ```
 
-## Backend guidance model
+## C# backend variants
 
-The C# / .NET backend pack is built around these roles:
+Use [Backend/C#/README.md](Backend/C%23/README.md) to choose the right backend pack:
 
-- `copilot-instructions.md` keeps the repository-wide baseline short and review-safe.
-- `instructions/**/*.instructions.md` hold rules, constraints, and repository policy.
-- `skills/<skill-name>/SKILL.md` hold repeatable workflows.
-- `prompts/*.prompt.md` give leads and engineers reusable entrypoints for common tasks.
-- `patterns/*.pattern.md` provide examples only.
-- `agents/backend-engineer.agent.md` is the backend orchestrator for VS Code agent workflows.
+- `GithubCopilot` for GitHub Copilot and `.github`-based repository guidance
+- `Codex` for repository-local `AGENTS.md` plus optional `~/.codex/skills`
 
 ## Setup
 
-See the stack README for the installation prompt and the target `.github` layout:
+See the stack README for the installation model and target layout:
 
 - [Backend C# / .NET setup](Backend/C%23/README.md)
 - [Frontend Vue setup](Frontend/Vue/README.md)

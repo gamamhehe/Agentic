@@ -12,7 +12,7 @@ for frontend stacks.
 ## Adding a new stack
 
 Create a sub-folder named after the stack (e.g. `React/`, `Angular/`) mirroring
-the structure of `Backend/C#/`. Add an agent, instructions, skills, patterns,
+the structure of `Backend/C#/GithubCopilot/`. Add an agent, instructions, skills, patterns,
 and a `copilot-instructions.md` entry point.
 
 After cloning and running the install prompts, files land in the VS Code convention paths:

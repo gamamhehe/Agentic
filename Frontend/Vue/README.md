@@ -22,7 +22,7 @@ Stack: **Vue 3**, **Tailwind CSS**
 Copy the prompt below and paste it into any AI chat.
 The AI will clone the repo, copy the agent files, write the entry point, and clean up.
 
-> See the full prompt in the Backend C# README under **Tier 1 — Install the agent to user space**.
+> See the full prompt in the C# GitHub Copilot README under **Option 1** and **Option 2**.
 
 After running, the result in user space will be:
 
@@ -40,7 +40,7 @@ After running, the result in user space will be:
 
 Once stack guidance files exist in this repo, copy the prompt below and paste it into any AI chat.
 
-> See the full prompt in the Backend C# README under **Tier 2 — Pull stack guidance into a project**.
+> See the full prompt in the C# GitHub Copilot README under **Option 1**.
 
 After running, the result in project space will be:
 
