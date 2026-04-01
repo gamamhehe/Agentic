@@ -7,6 +7,7 @@ Stack:
 - C#
 - .NET
 - Entity Framework Core
+- SharedKernel-based UseCase contracts
 
 ---
 
@@ -118,6 +119,8 @@ Expected result:
         12-infrastructure.instructions.md
         13-webapi.instructions.md
       project/
+        domain-project.instructions.md
+        team-standards.instructions.md
         domain-project.instructions.template.md
         team-standards.instructions.template.md
     skills/
@@ -126,6 +129,7 @@ Expected result:
       build-infrastructure-dependency.skill.md
       build-use-case.skill.md
       configure-application-settings.skill.md
+      wire-usecase-flow.skill.md
       refactor-backend-feature.skill.md
       review-backend-change.skill.md
       review-pull-request.skill.md
@@ -179,7 +183,6 @@ Examples:
 
 ### Instructions
 
-- `instructions/core/` for architecture and naming rules
 - `instructions/core/` for architecture, naming, and C# coding conventions
 - `instructions/layers/` for layer-specific constraints
 - `instructions/cross-cutting/` for configuration, testing, and PR protection gates
@@ -189,6 +192,7 @@ Examples:
 
 - `build-endpoint.skill.md`
 - `build-use-case.skill.md`
+- `wire-usecase-flow.skill.md`
 - `update-domain-model.skill.md`
 - `build-infrastructure-dependency.skill.md`
 - `configure-application-settings.skill.md`
@@ -214,6 +218,11 @@ Prefer project-specific guidance in:
 
 - `.github/instructions/project/domain-project.instructions.md`
 - `.github/instructions/project/team-standards.instructions.md`
+
+These files can be created from:
+
+- `.github/instructions/project/domain-project.instructions.template.md`
+- `.github/instructions/project/team-standards.instructions.template.md`
 
 Use `domain-project` for business and model knowledge.
 Use `team-standards` for review strictness, testing floor, and approval-required changes.

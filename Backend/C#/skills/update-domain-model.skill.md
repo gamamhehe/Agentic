@@ -32,7 +32,7 @@ Assume `@Backend-Engineer` has already loaded the core backend instructions.
 2. Update the domain type and make rules explicit.
 3. Keep framework, transport, and persistence concerns out of Domain.
 4. Validate how the change affects relationships and invariants.
-5. Note downstream impact on handlers, persistence, and API contracts.
+5. Note downstream impact on UseCases, persistence, and API contracts.
 6. Suggest unit tests for invariants and behavior.
 
 ## Output

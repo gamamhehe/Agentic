@@ -30,6 +30,7 @@ Keep this file lightweight. It is a router, not a full rulebook.
 
 - Endpoint work -> `skills/build-endpoint.skill.md`
 - Use-case work -> `skills/build-use-case.skill.md`
+- Use-case DI and validation flow wiring -> `skills/wire-usecase-flow.skill.md`
 - Domain changes -> `skills/update-domain-model.skill.md`
 - Infrastructure/integrations -> `skills/build-infrastructure-dependency.skill.md`
 - Config work -> `skills/configure-application-settings.skill.md`

@@ -2,7 +2,7 @@
 
 ## When to use
 
-Adding or updating an Application command, query, handler, or validator.
+Adding or updating an Application UseCase and its request/response/validator contracts.
 
 ## Load this additional guidance
 
@@ -21,8 +21,8 @@ Assume `@Backend-Engineer` has already loaded the core backend instructions.
 
 ## Inputs
 
-- feature name
-- read or write intent
+- business context name
+- use case name
 - request fields
 - expected result shape
 - validation rules
@@ -30,25 +30,26 @@ Assume `@Backend-Engineer` has already loaded the core backend instructions.
 
 ## Steps
 
-1. Decide whether the use case is a command or query.
-2. Place request, handler, and validator in the correct feature folder.
-3. Define response DTOs in the feature `Dtos/` folder when needed.
-4. Add FluentValidation rules for all externally supplied input.
-5. Keep the handler focused on orchestration, not transport or infrastructure details.
+1. Define the business action and pick the proper `IUseCase` interface shape.
+2. Place the UseCase under `Features/{BusinessContext}/UseCases/`.
+3. Co-locate request/response contracts as nested types or context-level contracts.
+4. Add FluentValidation rules under `Features/{BusinessContext}/Validator/` for externally supplied request data.
+5. Keep `ExecuteAsync(...)` focused on orchestration, not transport or infrastructure details.
 6. Use Application interfaces only; do not depend on Infrastructure implementations.
-7. Suggest handler and validator tests when behavior is non-trivial.
+7. Ensure the UseCase is discoverable by automatic DI registration.
+8. Suggest UseCase and validator tests when behavior is non-trivial.
 
 ## Output
 
 - use case summary
-- command or query classification
+- use case interface signature
 - interfaces introduced or reused
 - validation and test recommendations
 
 ## Checklist
 
-- [ ] Command or query naming is correct
-- [ ] Handler does not call another handler
+- [ ] UseCase naming matches business action
+- [ ] UseCase does not call another UseCase directly
 - [ ] Validator is co-located
 - [ ] Infrastructure dependencies are abstracted
 - [ ] DTO ownership stays in Application

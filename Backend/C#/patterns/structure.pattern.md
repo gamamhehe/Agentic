@@ -9,25 +9,25 @@ repository-name/
 │   │   ├── Models/
 │   │   └── Utils/
 │   │
+│   ├── {ProjectName}.SharedKernel/
+│   │   ├── IUseCase.cs
+│   │   ├── IInteractor.cs
+│   │   └── Common/
+│   │
 │   ├── {ProjectName}.Application/
 │   │   ├── Common/
-│   │   │   ├── Behaviors/
+│   │   │   ├── Execution/
 │   │   │   ├── Interfaces/
 │   │   │   └── Options/
 │   │   ├── Features/
-│   │   │   ├── {FeatureA}/
-│   │   │   │   ├── Commands/
-│   │   │   │   │   └── {CommandName}/
-│   │   │   │   │       ├── {CommandName}Command.cs
-│   │   │   │   │       ├── {CommandName}CommandHandler.cs
-│   │   │   │   │       └── {CommandName}CommandValidator.cs
-│   │   │   │   ├── Queries/
-│   │   │   │   │   └── {QueryName}/
-│   │   │   │   │       ├── {QueryName}Query.cs
-│   │   │   │   │       ├── {QueryName}QueryHandler.cs
-│   │   │   │   │       └── {QueryName}QueryValidator.cs
+│   │   │   ├── {BusinessContextA}/
+│   │   │   │   ├── UseCases/
+│   │   │   │   │   ├── {UseCaseName}.cs
+│   │   │   │   │   └── {AnotherUseCaseName}.cs
+│   │   │   │   ├── Validator/
+│   │   │   │   │   └── {UseCaseName}Validator.cs
 │   │   │   │   └── Dtos/
-│   │   │   └── {FeatureB}/
+│   │   │   └── {BusinessContextB}/
 │   │   └── Utils/
 │   │
 │   ├── {ProjectName}.Infrastructure/

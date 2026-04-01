@@ -72,7 +72,7 @@ Skills should assume they are already loaded and should not repeat them unless a
 Load only the layers actually touched:
 
 - `instructions/layers/10-domain.instructions.md` for domain entities, value objects, enums, domain rules
-- `instructions/layers/11-application.instructions.md` for commands, queries, handlers, validators, DTO ownership
+- `instructions/layers/11-application.instructions.md` for UseCases, validators, DTO ownership, and execution flow
 - `instructions/layers/12-infrastructure.instructions.md` for persistence, adapters, caching, jobs, telemetry, DI
 - `instructions/layers/13-webapi.instructions.md` for endpoints, middleware, authentication, OpenAPI, pipeline
 
@@ -135,7 +135,8 @@ Use the smallest skill that matches the task:
 | Skill | Use for |
 | --- | --- |
 | `skills/build-endpoint.skill.md` | Create or update API endpoints |
-| `skills/build-use-case.skill.md` | Create or update commands, queries, handlers, validators |
+| `skills/build-use-case.skill.md` | Create or update UseCases, request/response contracts, validators |
+| `skills/wire-usecase-flow.skill.md` | Configure IUseCase auto-registration and FluentValidation execution flow |
 | `skills/update-domain-model.skill.md` | Change domain entities, value objects, enums, or rules |
 | `skills/build-infrastructure-dependency.skill.md` | Implement persistence, adapters, caching, jobs, DI, integrations |
 | `skills/configure-application-settings.skill.md` | Add or change appsettings or options |

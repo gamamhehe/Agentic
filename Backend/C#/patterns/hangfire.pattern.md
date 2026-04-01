@@ -62,13 +62,13 @@ public class {JobName}Job
 ## Enqueuing Fire-and-Forget Jobs
 
 ```csharp
-public class {UseCase}Handler
+public class {UseCase}
 {
     private readonly IBackgroundJobClient _jobs;
 
-    public {UseCase}Handler(IBackgroundJobClient jobs) => _jobs = jobs;
+    public {UseCase}(IBackgroundJobClient jobs) => _jobs = jobs;
 
-    public async Task Handle(...)
+    public async Task ExecuteAsync(...)
     {
         // ... business logic ...
         _jobs.Enqueue<{JobName}Job>(job => job.ExecuteAsync(entityId, JobCancellationToken.Null));

@@ -30,13 +30,13 @@ Assume `@Backend-Engineer` has already loaded the core backend instructions.
 ## Steps
 
 1. Confirm the behavior belongs in WebApi plus Application, not in the endpoint itself.
-2. Define or identify the command or query the endpoint should call.
+2. Define or identify the UseCase the endpoint should call.
 3. Create or update the endpoint group and route using established naming.
 4. Apply OpenAPI metadata, response declarations, and endpoint naming.
 5. Return `TypedResults` and keep transport logic thin.
 6. Keep validation in Application, not in endpoint handlers.
 7. Stop for approval before introducing new auth or approval-gated behavior.
-8. Suggest API and application tests for the success path and failure paths.
+8. Suggest API and UseCase tests for the success path and failure paths.
 
 ## Output
 

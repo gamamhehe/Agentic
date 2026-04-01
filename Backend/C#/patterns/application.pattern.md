@@ -1,96 +1,201 @@
 # Application Patterns
 
-## MediatR Query + Handler
+## UseCase Contract (SharedKernel)
+
+Location: `src/{ProjectName}.SharedKernel/IUseCase.cs`
 
 ```csharp
-namespace {ProjectName}.Application.Features.{Feature}.Queries.{QueryName};
+namespace {ProjectName}.SharedKernel;
 
-public record {QueryName}Query(Guid Id) : IRequest<{QueryName}Dto?>;
-
-public class {QueryName}QueryHandler : IRequestHandler<{QueryName}Query, {QueryName}Dto?>
+public interface IUseCase
 {
-    private readonly I{Entity}Repository _repository;
+}
 
-    public {QueryName}QueryHandler(I{Entity}Repository repository)
-        => _repository = repository;
+public interface IUseCase<TRequest, TResponse> : IUseCase
+{
+    Task<TResponse> ExecuteAsync(TRequest request, CancellationToken ct = default);
+}
 
-    public async Task<{QueryName}Dto?> Handle({QueryName}Query request, CancellationToken ct)
+public interface IUseCase<TRequest1, TRequest2, TResponse> : IUseCase
+{
+    Task<TResponse> ExecuteAsync(TRequest1 request1, TRequest2 request2, CancellationToken ct = default);
+}
+```
+
+## Business Context UseCase
+
+Location: `Application/Features/{BusinessContext}/UseCases/{UseCaseName}.cs`
+
+```csharp
+namespace {ProjectName}.Application.Features.Orders.UseCases;
+
+public sealed class UpsertOrder(
+    IOrderRepository repository,
+    IUserContext userContext)
+    : IUseCase<Guid, UpsertOrder.Request, Guid>
+{
+    public async Task<Guid> ExecuteAsync(Guid id, Request request, CancellationToken ct = default)
     {
-        var entity = await _repository.GetByIdAsync(request.Id, ct);
-        return entity is null ? null : new {QueryName}Dto(/* map */);
+        ArgumentNullException.ThrowIfNull(request);
+
+        var currentUserId = userContext.UserId;
+        var order = request.ToDomain(id, currentUserId);
+
+        return await repository.UpsertAsync(order, ct);
+    }
+
+    public sealed record Request(string Number, DateTime OrderedAt)
+    {
+        public Order ToDomain(Guid id, Guid userId)
+            => new(id, Number, OrderedAt, userId);
     }
 }
 ```
 
-## FluentValidation Validator
+## FluentValidation for UseCase Request
 
-Auto-discovered by `ValidationBehavior` — never invoke manually.
+Location: `Application/Features/{BusinessContext}/Validator/{UseCaseName}Validator.cs`
 
 ```csharp
 using FluentValidation;
+using static {ProjectName}.Application.Features.Orders.UseCases.UpsertOrder;
 
-namespace {ProjectName}.Application.Features.{Feature}.Commands;
+namespace {ProjectName}.Application.Features.Orders.Validator;
 
-public class {CommandName}Validator : AbstractValidator<{CommandName}>
+public sealed class UpsertOrderValidator : AbstractValidator<Request>
 {
-    public {CommandName}Validator()
+    public UpsertOrderValidator()
     {
-        RuleFor(x => x.Id)
-            .NotEmpty().WithMessage("ID is required");
+        RuleFor(x => x.Number)
+            .NotEmpty()
+            .MaximumLength(32);
 
-        RuleFor(x => x.Email)
-            .NotEmpty().WithMessage("Email is required")
-            .EmailAddress().WithMessage("A valid email address is required");
-
-        RuleFor(x => x.Title)
-            .NotEmpty().WithMessage("Title is required")
-            .MinimumLength(3).WithMessage("Title must be at least 3 characters")
-            .MaximumLength(200).WithMessage("Title must not exceed 200 characters");
-
-        RuleFor(x => x.Description)
-            .MaximumLength(200)
-            .When(x => !string.IsNullOrWhiteSpace(x.Description));
-
-        RuleFor(x => x.Status)
-            .IsInEnum().WithMessage("Invalid status value");
-
-        RuleFor(x => x.TenantId)
-            .NotEmpty().WithMessage("Tenant ID is required");
+        RuleFor(x => x.OrderedAt)
+            .LessThanOrEqualTo(DateTime.UtcNow.AddMinutes(1));
     }
 }
 ```
 
-## ValidationBehavior (MediatR Pipeline)
+## Automatic UseCase Registration Extension
 
-File: `Application/Common/Behaviors/ValidationBehavior.cs`
+Location: `Application/Common/DependencyInjection/UseCaseRegistrationExtensions.cs`
 
 ```csharp
-using FluentValidation;
-using MediatR;
+using System.Reflection;
+using Microsoft.Extensions.DependencyInjection;
 
-public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
-    where TRequest : notnull
+public static class UseCaseRegistrationExtensions
 {
-    private readonly IEnumerable<IValidator<TRequest>> _validators;
-
-    public ValidationBehavior(IEnumerable<IValidator<TRequest>> validators)
-        => _validators = validators;
-
-    public async Task<TResponse> Handle(
-        TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken ct)
+    public static IServiceCollection AddUseCasesFromAssembly(
+        this IServiceCollection services,
+        Assembly assembly)
     {
-        if (!_validators.Any()) return await next();
-
-        var context = new ValidationContext<TRequest>(request);
-        var failures = _validators
-            .Select(v => v.Validate(context))
-            .SelectMany(r => r.Errors)
-            .Where(f => f is not null)
+        var implementationTypes = assembly
+            .DefinedTypes
+            .Where(t => t is { IsClass: true, IsAbstract: false })
+            .Where(t => typeof(IUseCase).IsAssignableFrom(t.AsType()))
             .ToList();
 
-        if (failures.Count != 0) throw new ValidationException(failures);
+        foreach (var implementation in implementationTypes)
+        {
+            var implementationType = implementation.AsType();
 
-        return await next();
+            services.AddScoped(implementationType);
+
+            var contracts = implementation
+                .ImplementedInterfaces
+                .Where(i => i != typeof(IUseCase) && typeof(IUseCase).IsAssignableFrom(i));
+
+            foreach (var contract in contracts)
+            {
+                services.AddScoped(contract, sp => sp.GetRequiredService(implementationType));
+            }
+        }
+
+        return services;
     }
 }
 ```
+
+## Automatic FluentValidation Integration in UseCase Flow
+
+Location: `Application/Common/Execution/ValidatedUseCaseDecorator.cs`
+
+```csharp
+using FluentValidation;
+using FluentValidation.Results;
+
+public sealed class ValidatedUseCaseDecorator<TRequest, TResponse>(
+    IUseCase<TRequest, TResponse> inner,
+    IEnumerable<IValidator<TRequest>> validators)
+    : IUseCase<TRequest, TResponse>
+{
+    public async Task<TResponse> ExecuteAsync(TRequest request, CancellationToken ct = default)
+    {
+        if (validators.Any())
+        {
+            var context = new ValidationContext<TRequest>(request);
+            var validationResults = await Task.WhenAll(validators.Select(v => v.ValidateAsync(context, ct)));
+
+            var failures = validationResults
+                .SelectMany(static x => x.Errors)
+                .Where(static x => x is not null)
+                .ToList();
+
+            if (failures.Count > 0)
+            {
+                throw new ValidationException(failures);
+            }
+        }
+
+        return await inner.ExecuteAsync(request, ct);
+    }
+}
+```
+
+Location: `Application/DependencyInjection.cs`
+
+```csharp
+using FluentValidation;
+using Microsoft.Extensions.DependencyInjection;
+using Scrutor;
+
+public static class DependencyInjection
+{
+    public static IServiceCollection AddApplication(this IServiceCollection services)
+    {
+        var assembly = typeof(DependencyInjection).Assembly;
+
+        services.AddUseCasesFromAssembly(assembly);
+        services.AddValidatorsFromAssembly(assembly);
+
+        services.TryDecorate(typeof(IUseCase<,>), typeof(ValidatedUseCaseDecorator<,>));
+
+        return services;
+    }
+}
+```
+
+## Interactor/Executor Pattern (Optional)
+
+Location: `src/{ProjectName}.SharedKernel/IInteractor.cs` (contract)
+
+Location: `src/{ProjectName}.Infrastructure/Execution/Interactor.cs` (implementation)
+
+```csharp
+public interface IInteractor
+{
+    TUseCase Create<TUseCase>() where TUseCase : IUseCase;
+}
+
+```
+
+```csharp
+public sealed class Interactor(IServiceProvider serviceProvider) : IInteractor
+{
+    public TUseCase Create<TUseCase>() where TUseCase : IUseCase
+        => serviceProvider.GetRequiredService<TUseCase>();
+}
+```
+
+Use this when you want controllers/endpoints to resolve concrete UseCase types by class name, similar to the Rotte style.

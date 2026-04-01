@@ -1,38 +1,38 @@
 # Testing Patterns
 
-## Unit Test — Query Handler
+## Unit Test — UseCase
 
 ```csharp
 using FluentAssertions;
 using NSubstitute;
 
-public class {QueryName}QueryHandlerTests
+public class Get{Entity}ByIdTests
 {
     private readonly I{Entity}Repository _repository = Substitute.For<I{Entity}Repository>();
-    private readonly {QueryName}QueryHandler _handler;
+    private readonly Get{Entity}ById _useCase;
 
-    public {QueryName}QueryHandlerTests() => _handler = new(_repository);
+    public Get{Entity}ByIdTests() => _useCase = new(_repository);
 
     [Fact]
-    public async Task Handle_WhenEntityExists_ShouldReturnDto()
+    public async Task ExecuteAsync_WhenEntityExists_ShouldReturnDto()
     {
         var id = Guid.NewGuid();
         _repository.GetByIdAsync(id, Arg.Any<CancellationToken>())
             .Returns(new {Entity} { Id = id });
 
-        var result = await _handler.Handle(new {QueryName}Query(id), CancellationToken.None);
+        var result = await _useCase.ExecuteAsync(new Get{Entity}ById.Request(id), CancellationToken.None);
 
         result.Should().NotBeNull();
         result!.Id.Should().Be(id);
     }
 
     [Fact]
-    public async Task Handle_WhenEntityNotFound_ShouldReturnNull()
+    public async Task ExecuteAsync_WhenEntityNotFound_ShouldReturnNull()
     {
         _repository.GetByIdAsync(Arg.Any<Guid>(), Arg.Any<CancellationToken>())
             .Returns(({Entity}?)null);
 
-        var result = await _handler.Handle(new {QueryName}Query(Guid.NewGuid()), CancellationToken.None);
+        var result = await _useCase.ExecuteAsync(new Get{Entity}ById.Request(Guid.NewGuid()), CancellationToken.None);
 
         result.Should().BeNull();
     }
@@ -44,21 +44,21 @@ public class {QueryName}QueryHandlerTests
 ```csharp
 using FluentValidation.TestHelper;
 
-public class {CommandName}ValidatorTests
+public class {UseCaseName}ValidatorTests
 {
-    private readonly {CommandName}Validator _validator = new();
+    private readonly {UseCaseName}Validator _validator = new();
 
     [Fact]
     public void Validate_WhenAllFieldsValid_ShouldPass()
     {
-        var result = _validator.TestValidate(new {CommandName} { /* valid props */ });
+        var result = _validator.TestValidate(new {UseCaseName}.Request(/* valid props */));
         result.ShouldNotHaveAnyValidationErrors();
     }
 
     [Fact]
     public void Validate_WhenIdIsEmpty_ShouldFailOnId()
     {
-        var result = _validator.TestValidate(new {CommandName} { Id = Guid.Empty });
+        var result = _validator.TestValidate(new {UseCaseName}.Request(Guid.Empty, ""));
         result.ShouldHaveValidationErrorFor(x => x.Id);
     }
 }

@@ -45,6 +45,7 @@ See `patterns/logging.pattern.md` for telemetry setup.
 - Each sub-method: `private static void Add{Concern}(...)` — one concern each
 - Never mix concerns in a sub-method
 - Optional integrations silently skip when config is absent
+- Do not manually register every UseCase class one-by-one; use assembly scanning extension for all `IUseCase` implementations
 
 Current sub-methods:
 

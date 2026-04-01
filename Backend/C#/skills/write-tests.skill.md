@@ -15,7 +15,7 @@ Assume `@Backend-Engineer` has already loaded the core backend instructions.
 ## Patterns
 
 - `patterns/testing.pattern.md`
-- `patterns/application.pattern.md` for handler tests
+- `patterns/application.pattern.md` for UseCase tests
 - `patterns/api.pattern.md` for integration or endpoint tests
 
 ## Inputs

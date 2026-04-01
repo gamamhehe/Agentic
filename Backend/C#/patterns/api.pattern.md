@@ -1,25 +1,46 @@
 # API Patterns
 
-## Minimal API Endpoint with MediatR
+## Minimal API Endpoint with UseCase Interface
 
 ```csharp
-using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
 
-public static class {DomainModel}Endpoints
+public static class OrdersEndpoints
 {
-    public static void Map{DomainModel}Endpoints(this IEndpointRouteBuilder app)
+    public static void MapOrdersEndpoints(this IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("/api/v1/{domainmodel}").WithTags("{DomainModel}");
+        var group = app.MapGroup("/api/v1/orders").WithTags("Orders");
 
-        group.MapGet("/{id:guid}", async (Guid id, ISender sender, CancellationToken ct) =>
+        group.MapGet("/{id:guid}", async (
+            Guid id,
+            IUseCase<GetOrderById.Request, GetOrderById.Response?> useCase,
+            CancellationToken ct) =>
         {
-            var result = await sender.Send(new Get{DomainModel}Query(id), ct);
+            var result = await useCase.ExecuteAsync(new GetOrderById.Request(id), ct);
             return result is not null ? TypedResults.Ok(result) : TypedResults.NotFound();
         })
-        .WithName("Get{DomainModel}ById")
-        .Produces<{DomainModel}Dto>(StatusCodes.Status200OK)
+        .WithName("GetOrderById")
+        .Produces<GetOrderById.Response>(StatusCodes.Status200OK)
         .ProducesProblem(StatusCodes.Status404NotFound);
+    }
+}
+```
+
+## MVC Controller with Interactor (Rotte-style)
+
+```csharp
+[ApiController]
+[Route("[controller]")]
+public class OrdersController(IInteractor interactor) : ControllerBase
+{
+    [HttpPost]
+    public async Task<IActionResult> UpsertAsync([FromBody] UpsertOrder.Request request, CancellationToken ct)
+    {
+        var id = await interactor
+            .Create<UpsertOrder>()
+            .ExecuteAsync(Guid.Empty, request, ct);
+
+        return Ok(id);
     }
 }
 ```
@@ -70,70 +91,6 @@ public static class OpenApiExtensions
         app.MapOpenApi();
         app.MapScalarApiReference();
         return app;
-    }
-}
-```
-
-## API Key Authentication Middleware
-
-File: `WebApi/Middleware/ApiKeyAuthenticationMiddleware.cs`
-
-```csharp
-public class ApiKeyAuthenticationMiddleware
-{
-    private const string ApiKeyHeaderName = "X-Api-Key";
-    private readonly RequestDelegate _next;
-
-    public ApiKeyAuthenticationMiddleware(RequestDelegate next) => _next = next;
-
-    public async Task InvokeAsync(HttpContext context, IOptions<ApplicationOptions> options)
-    {
-        if (!context.Request.Headers.TryGetValue(ApiKeyHeaderName, out var providedKey)
-            || !string.Equals(providedKey, options.Value.ApiKey, StringComparison.Ordinal))
-        {
-            context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-            await context.Response.WriteAsync("Unauthorized");
-            return;
-        }
-
-        await _next(context);
-    }
-}
-```
-
-### Registration order in Program.cs
-
-```csharp
-app.UseMiddleware<ExceptionHandlingMiddleware>();
-app.UseMiddleware<ApiKeyAuthenticationMiddleware>(); // before UseAuthorization
-app.UseAuthorization();
-app.UseOpenApiPipeline();                            // after UseAuthorization
-```
-
-## AddApiHeaderParameter — OpenAPI Operation Transformer
-
-File: `WebApi/Extensions/AddApiHeaderParameter.cs`
-
-```csharp
-using Microsoft.AspNetCore.OpenApi;
-using Microsoft.OpenApi.Models;
-
-public class AddApiHeaderParameter : IOpenApiOperationTransformer
-{
-    public Task TransformAsync(
-        OpenApiOperation operation,
-        OpenApiOperationTransformerContext context,
-        CancellationToken cancellationToken)
-    {
-        operation.Parameters ??= [];
-        operation.Parameters.Add(new OpenApiParameter
-        {
-            Name = "X-Api-Key",
-            In = ParameterLocation.Header,
-            Required = true,
-            Schema = new OpenApiSchema { Type = "string" }
-        });
-        return Task.CompletedTask;
     }
 }
 ```

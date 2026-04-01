@@ -13,7 +13,7 @@ See `patterns/testing.pattern.md` for code examples.
 | Project                           | Purpose                                                            |
 | --------------------------------- | ------------------------------------------------------------------ |
 | `{ProjectName}.Domain.Tests`      | Unit tests for domain models, value objects, business rules        |
-| `{ProjectName}.Application.Tests` | Unit tests for handlers, validators, behaviors — mocked interfaces |
+| `{ProjectName}.Application.Tests` | Unit tests for UseCases, validators, execution flow — mocked interfaces |
 | `{ProjectName}.IntegrationTests`  | End-to-end tests against real or in-memory infrastructure          |
 
 ## Unit Test Rules
@@ -28,7 +28,7 @@ See `patterns/testing.pattern.md` for code examples.
 ## Application Test Rules
 
 - Mock all interfaces from `Application/Common/Interfaces/`
-- Test handlers in isolation — mock repository, verify returned DTO
+- Test UseCases in isolation — mock repositories/services, verify returned result shape
 - Test validators using `TestValidate()` from `FluentValidation.TestHelper`
 
 ## Integration Test Rules
@@ -36,7 +36,7 @@ See `patterns/testing.pattern.md` for code examples.
 - `WebApplicationFactory<T>` for full API tests
 - Dedicated test database or in-memory equivalent
 - Reset state between runs — no shared mutable state
-- Full slice: HTTP request → handler → infrastructure
+- Full slice: HTTP request → UseCase execution flow → infrastructure
 
 ## General Rules
 
