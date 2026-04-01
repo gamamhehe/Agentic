@@ -107,9 +107,11 @@ Expected result:
       core/
         01-architecture.instructions.md
         02-naming.instructions.md
+        03-csharp-code-style.instructions.md
       cross-cutting/
         20-configuration.instructions.md
         21-testing.instructions.md
+        22-review-gates.instructions.md
       layers/
         10-domain.instructions.md
         11-application.instructions.md
@@ -127,6 +129,7 @@ Expected result:
       refactor-backend-feature.skill.md
       review-backend-change.skill.md
       review-pull-request.skill.md
+      protect-backend-project.skill.md
       update-domain-model.skill.md
       write-tests.skill.md
     patterns/
@@ -177,8 +180,9 @@ Examples:
 ### Instructions
 
 - `instructions/core/` for architecture and naming rules
+- `instructions/core/` for architecture, naming, and C# coding conventions
 - `instructions/layers/` for layer-specific constraints
-- `instructions/cross-cutting/` for configuration and testing
+- `instructions/cross-cutting/` for configuration, testing, and PR protection gates
 - `instructions/project/` for project domain and team standards
 
 ### Skills
@@ -193,6 +197,7 @@ Examples:
 - `refactor-backend-feature.skill.md`
 - `review-backend-change.skill.md`
 - `review-pull-request.skill.md`
+- `protect-backend-project.skill.md`
 
 ### Patterns
 

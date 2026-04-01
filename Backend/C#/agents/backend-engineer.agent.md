@@ -62,6 +62,7 @@ Load these for almost every non-trivial backend task:
 
 - `instructions/core/01-architecture.instructions.md`
 - `instructions/core/02-naming.instructions.md`
+- `instructions/core/03-csharp-code-style.instructions.md`
 
 These are the backend baseline.
 Skills should assume they are already loaded and should not repeat them unless a skill truly must override the normal routing behavior.
@@ -81,6 +82,7 @@ Load when relevant:
 
 - `instructions/cross-cutting/20-configuration.instructions.md` for appsettings, options, secrets, config binding
 - `instructions/cross-cutting/21-testing.instructions.md` for tests, regression safety, or review work
+- `instructions/cross-cutting/22-review-gates.instructions.md` for pre-merge protection and PR approval verdicts
 
 ## Project instructions
 
@@ -142,6 +144,7 @@ Use the smallest skill that matches the task:
 | `skills/refactor-backend-feature.skill.md` | Refactor without changing intended behavior |
 | `skills/review-backend-change.skill.md` | Review a local change, generated output, or a focused code slice |
 | `skills/review-pull-request.skill.md` | Review a pull request, diff, or pre-merge change set |
+| `skills/protect-backend-project.skill.md` | Run fast merge-gate protection checks and return explicit approval verdict |
 
 Use `review-backend-change` for focused code review.
 Use `review-pull-request` for broader pre-merge review that includes contract, deployment, and regression risk.
