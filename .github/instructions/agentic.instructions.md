@@ -345,6 +345,7 @@ You must proactively suggest updates when:
 Use a structure like this when appropriate:
 
 ```text
+domain-project.instructions.md
 .github/
   agents/
     backend-engineer.agent.md
@@ -353,7 +354,6 @@ Use a structure like this when appropriate:
       01-architecture.instructions.md
       02-naming.instructions.md
     project/
-      domain-project.instructions.md
       team-standards.instructions.md
   skills/
     build-endpoint/

@@ -2,6 +2,12 @@
 
 This folder now contains two tool-specific guidance packs for C# and .NET backend work.
 
+It also contains one shared project-domain file:
+
+- `domain-project.instructions.md`
+
+Keep that file at the target repository root when you want GithubCopilot and Codex to read the same business language, aggregate names, invariants, and workflow rules.
+
 ## Choose the right pack
 
 ### GithubCopilot
@@ -39,6 +45,7 @@ This pack is centered on:
 ```text
 Backend/C#/
   README.md
+  domain-project.instructions.md
   GithubCopilot/
   Codex/
 ```

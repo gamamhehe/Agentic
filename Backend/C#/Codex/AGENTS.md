@@ -33,9 +33,10 @@ Do not load everything blindly.
 For most non-trivial backend work:
 
 1. read this `AGENTS.md`
-2. inspect the touched layers and current repository structure
-3. use the smallest relevant optional skill if one is installed
-4. consult patterns only when you need a concrete example or reference shape
+2. read the repository-root `domain-project.instructions.md` when project-specific business rules matter
+3. inspect the touched layers and current repository structure
+4. use the smallest relevant optional skill if one is installed
+5. consult patterns only when you need a concrete example or reference shape
 
 ## Canonical skill catalog
 
@@ -157,3 +158,7 @@ If repeated uncertainty appears, say what guidance is missing and where it shoul
 - examples belong in `patterns/`
 
 Team leads should edit this file to express repository-specific rules, review expectations, approval gates, and required quality bars.
+
+Project-specific domain language, aggregates, invariants, and workflow rules should live in the repository-root `domain-project.instructions.md` so Codex and GithubCopilot can share the same domain source.
+
+If repository-root `domain-project.instructions.md` already exists, treat it as the local source of truth and do not overwrite it automatically. Ask whether to `replace`, `skip`, or `stop all`.

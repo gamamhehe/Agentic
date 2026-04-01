@@ -32,5 +32,7 @@ Use this file as the repository-wide baseline only. Keep detailed rules in `inst
 
 ## Project Overrides
 
-- Load `instructions/project/domain-project.instructions.md` for local business rules.
+- Load the repository-root `domain-project.instructions.md` for local business rules.
 - Load `instructions/project/team-standards.instructions.md` for team review thresholds, required tests, approval gates, and local coding preferences.
+
+If repository-root `domain-project.instructions.md` already exists, treat it as the local source of truth and do not overwrite it automatically.

@@ -9,6 +9,7 @@ This folder is a reusable GitHub Copilot backend guidance pack built around Copi
 - custom agent: `agents/backend-engineer.agent.md`
 - repository baseline instructions: `copilot-instructions.md`
 - path-specific instructions: `instructions/**/*.instructions.md`
+- shared domain reference source: `../domain-project.instructions.md`
 - agent skills: `skills/<skill-name>/SKILL.md`
 - reusable prompt files: `prompts/*.prompt.md`
 - reference examples: `patterns/*.pattern.md`
@@ -19,6 +20,7 @@ Patterns are examples only. They help shape implementations, but they do not def
 
 ```text
 {workspaceRoot}/
+  domain-project.instructions.md
   .github/
     agents/
       backend-engineer.agent.md
@@ -26,7 +28,7 @@ Patterns are examples only. They help shape implementations, but they do not def
       core/
       cross-cutting/
       layers/
-      project/
+      project/   (optional and managed manually)
     skills/
       build-endpoint/
         SKILL.md
@@ -60,13 +62,25 @@ Create these folders in the workspace root if they do not exist:
 - .github/prompts/
 - .github/patterns/
 
-Copy:
+Before copying any file or folder:
+- check whether the target already exists
+- if it exists, ask me whether to `replace`, `skip`, or `stop all`
+- do not overwrite existing files silently
+- if `{workspaceRoot}/domain-project.instructions.md` already exists, never replace it automatically
+
+Copy only the shared and reusable guidance:
 - Backend/C#/GithubCopilot/agents/backend-engineer.agent.md -> .github/agents/backend-engineer.agent.md
 - Backend/C#/GithubCopilot/copilot-instructions.md -> .github/copilot-instructions.md
-- Backend/C#/GithubCopilot/instructions/* -> .github/instructions/   (preserve subfolders)
+- Backend/C#/GithubCopilot/instructions/core/* -> .github/instructions/core/
+- Backend/C#/GithubCopilot/instructions/cross-cutting/* -> .github/instructions/cross-cutting/
+- Backend/C#/GithubCopilot/instructions/layers/* -> .github/instructions/layers/
 - Backend/C#/GithubCopilot/skills/* -> .github/skills/               (preserve subfolders)
 - Backend/C#/GithubCopilot/prompts/* -> .github/prompts/
 - Backend/C#/GithubCopilot/patterns/* -> .github/patterns/
+
+Do not copy `Backend/C#/GithubCopilot/instructions/project/*` automatically.
+Do not copy `Backend/C#/domain-project.instructions.md` automatically.
+I will handle project-specific guidance manually.
 
 Then show the resulting .github tree.
 ```
@@ -112,16 +126,18 @@ Prompt files give teams consistent entrypoints for recurring tasks:
 
 ### Use project instructions to govern the agent
 
-Keep project-specific decisions in:
+Keep project-specific decisions in these manual files:
 
-- `instructions/project/domain-project.instructions.md`
+- repository-root `domain-project.instructions.md` sourced from `Backend/C#/domain-project.instructions.md`
 - `instructions/project/team-standards.instructions.md`
 
 Use the project templates when starting from scratch:
 
-- `instructions/project/domain-project.instructions.template.md`
 - `instructions/project/team-standards.instructions.template.md`
 - `instructions/project/team-standards.example.instructions.md`
+
+`domain-project.instructions.md` is now shared between GithubCopilot and Codex. Keep one repo-root copy in the target repository so both tools can read the same business language and invariants.
+If that repo-root file already exists, keep it unless I explicitly approve replacement.
 
 ## Available backend skills
 

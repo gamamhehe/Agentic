@@ -41,9 +41,10 @@ For most non-trivial backend work:
 2. load the core instructions
 3. load only the touched layer instructions
 4. load cross-cutting instructions when relevant
-5. load project instructions when present
-6. load the smallest matching skill
-7. consult patterns only for concrete structure or examples
+5. load the shared repository-root `domain-project.instructions.md` when business rules matter
+6. load project instructions when present
+7. load the smallest matching skill
+8. consult patterns only for concrete structure or examples
 
 ### Core instructions
 
@@ -67,9 +68,12 @@ For most non-trivial backend work:
 
 ### Project instructions
 
-- `instructions/project/domain-project.instructions.md`
+- repository-root `domain-project.instructions.md`
 - `instructions/project/team-standards.instructions.md`
 - any other `instructions/project/*.instructions.md`
+
+Treat the repository-root `domain-project.instructions.md` as authoritative project state.
+If it already exists in a target repository, do not replace it automatically with the shared source file. Ask whether to `replace`, `skip`, or `stop all`.
 
 ## Canonical skill catalog
 

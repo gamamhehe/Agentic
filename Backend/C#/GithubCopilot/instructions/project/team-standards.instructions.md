@@ -7,7 +7,7 @@ description: Decision-ready team defaults for review strictness, testing floors,
 
 Use this file for local team operating rules that should change agent behavior inside a specific repository.
 
-Keep generic architecture rules in the core instructions. Keep project-specific business rules in `domain-project.instructions.md`.
+Keep generic architecture rules in the core instructions. Keep project-specific business rules in the repository-root `domain-project.instructions.md`.
 
 ## Review Mode
 
