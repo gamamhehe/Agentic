@@ -14,7 +14,6 @@ applyTo: "**/*.cs"
 
 ## File and Type Structure
 
-- One public type per file.
 - File name must match the primary type name.
 - Prefer file-scoped namespaces.
 - Keep using directives minimal and remove unused imports.
