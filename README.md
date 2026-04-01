@@ -1,59 +1,64 @@
-﻿# Agentic — AI Guidance Repository
+# Agentic
 
-GitHub Copilot guidance organised by technology stack.
-Uses a **two-tier model**: agent orchestrators live in your VS Code user space;
-stack-specific guidance is pulled into each project on demand.
+Reusable GitHub Copilot guidance packs organized by stack.
 
-| Tier                         | What lives here                | Scope                          |
-| ---------------------------- | ------------------------------ | ------------------------------ |
-| **User space** `~/.github/`  | Agent files + root entry point | All workspaces, installed once |
-| **Project space** `.github/` | Instructions, skills, patterns | Per repo, pulled on demand     |
+The backend C# pack in this repository is aligned to the official Copilot artifact model:
+
+- custom agents
+- repository and path-specific instructions
+- agent skills
+- reusable prompt files
+- reference patterns
 
 ## Stacks
 
-| Stack              | Folder          | Guide                                     |
-| ------------------ | --------------- | ----------------------------------------- |
-| **C# / .NET**      | `Backend/C#/`   | [Backend README](Backend/C%23/README.md)  |
-| **Vue + Tailwind** | `Frontend/Vue/` | [Frontend README](Frontend/Vue/README.md) |
+| Stack | Folder | Guide |
+| --- | --- | --- |
+| C# / .NET | `Backend/C#/` | [Backend README](Backend/C%23/README.md) |
+| Vue + Tailwind | `Frontend/Vue/` | [Frontend README](Frontend/Vue/README.md) |
 
 ## Repository layout
 
-```
+```text
 Backend/
   C#/
-    agents/          <- agent file (copied to user space)
-    instructions/    <- pulled into project on demand
+    agents/
+    instructions/
     skills/
+    prompts/
     patterns/
     copilot-instructions.md
 Frontend/
   Vue/
-    agents/          <- agent file (copied to user space)
-    instructions/    <- pulled into project on demand (WIP)
+    agents/
+    instructions/
     skills/
     patterns/
     copilot-instructions.md
-skills/
-  BootstrapAgenticGuidance.skill.md
-README.md
 ```
 
----
+## Backend guidance model
 
-## How to set up
+The C# / .NET backend pack is built around these roles:
 
-See the prompt scripts in each stack's README — copy a prompt, paste it into any AI chat,
-and the AI will clone the repo, copy the right files, and clean up automatically.
+- `copilot-instructions.md` keeps the repository-wide baseline short and review-safe.
+- `instructions/**/*.instructions.md` hold rules, constraints, and repository policy.
+- `skills/<skill-name>/SKILL.md` hold repeatable workflows.
+- `prompts/*.prompt.md` give leads and engineers reusable entrypoints for common tasks.
+- `patterns/*.pattern.md` provide examples only.
+- `agents/backend-engineer.agent.md` is the backend orchestrator for VS Code agent workflows.
 
-- **Backend (C# / .NET)** → [`Backend/C#/README.md`](Backend/C%23/README.md)
-- **Frontend (Vue + Tailwind)** → [`Frontend/Vue/README.md`](Frontend/Vue/README.md)
+## Setup
 
-All available prompts are in [`skills/BootstrapAgenticGuidance.skill.md`](skills/BootstrapAgenticGuidance.skill.md).
+See the stack README for the installation prompt and the target `.github` layout:
 
----
+- [Backend C# / .NET setup](Backend/C%23/README.md)
+- [Frontend Vue setup](Frontend/Vue/README.md)
 
-## Precedence inside any stack
+## Precedence inside a stack
 
+```text
+Instructions > Skills > Patterns
 ```
-Instructions  >  Skills  >  Patterns
-```
+
+Prompt files are entrypoints. Agents orchestrate which instructions and skills to use.

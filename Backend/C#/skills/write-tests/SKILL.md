@@ -1,21 +1,24 @@
-# Write Tests Skill
+---
+name: write-tests
+description: Add or update unit, application, integration, or API tests for a C# and .NET backend.
+---
+
+# Write Tests
 
 ## When to use
 
-Adding or updating tests for domain, application, integration, or API behavior.
+Use this skill when adding or updating tests for domain, application, integration, or API behavior.
 
-## Load this additional guidance
-
-Assume `@Backend-Engineer` has already loaded the core backend instructions.
+## Load this guidance
 
 - `instructions/cross-cutting/21-testing.instructions.md`
 - layer instructions matching the code under test
 - `instructions/project/team-standards.instructions.md` when local testing floors or naming rules exist
 
-## Patterns
+## Use these patterns as examples
 
 - `patterns/testing.pattern.md`
-- `patterns/application.pattern.md` for UseCase tests
+- `patterns/application.pattern.md` for use-case tests
 - `patterns/api.pattern.md` for integration or endpoint tests
 
 ## Inputs
@@ -25,7 +28,7 @@ Assume `@Backend-Engineer` has already loaded the core backend instructions.
 - target test level
 - dependencies to mock or keep real
 
-## Steps
+## Workflow
 
 1. Choose the correct test level for the behavior and risk.
 2. Place the test in the correct test project.
@@ -41,11 +44,3 @@ Assume `@Backend-Engineer` has already loaded the core backend instructions.
 - scenarios covered
 - dependencies mocked or kept real
 - remaining test gaps if any
-
-## Checklist
-
-- [ ] Test level is appropriate
-- [ ] Naming is consistent
-- [ ] Tests are deterministic
-- [ ] Assertions are meaningful
-- [ ] Regression risk is covered

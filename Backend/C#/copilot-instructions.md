@@ -1,45 +1,36 @@
 ---
 name: Backend-CSharp-Copilot-Instructions
-description: Lightweight backend entrypoint for C#/.NET repositories. Route to Backend-Engineer and relevant instruction and skill files.
+description: Compact repository-wide baseline for C# and .NET backend work. Keep this file concise so it remains effective for coding and review surfaces.
 applyTo: "**"
 ---
 
 # Backend C# Copilot Instructions
 
-Use `@Backend-Engineer` as the default working surface for backend tasks.
+Default to `@Backend-Engineer` for backend work in VS Code when the custom agent is available.
 
-Keep this file lightweight. It is a router, not a full rulebook.
+Use this file as the repository-wide baseline only. Keep detailed rules in `instructions/`, repeatable workflows in `skills/*/SKILL.md`, and examples in `patterns/`.
 
-## Load Order
+## Baseline
 
-1. `agents/backend-engineer.agent.md`
-2. `instructions/core/01-architecture.instructions.md`
-3. `instructions/core/02-naming.instructions.md`
-4. `instructions/core/03-csharp-code-style.instructions.md`
-5. Layer instructions that match touched code
-6. Cross-cutting instructions that match the task
-7. Matching skill
-8. Patterns only as examples
+- Preserve clean layer boundaries: Domain and SharedKernel stay free of Infrastructure and WebApi concerns.
+- Keep business logic out of endpoints, middleware, and infrastructure adapters.
+- Prefer explicit C# and .NET code over implicit magic when behavior or failure handling matters.
+- Treat nullability, cancellation, validation, configuration, logging, and test coverage as design responsibilities, not cleanup work.
+- Use patterns as examples only. Patterns do not override instructions.
 
-## Always Load for Review Tasks
+## Task Routing
 
-- `instructions/cross-cutting/21-testing.instructions.md`
-- `instructions/cross-cutting/22-review-gates.instructions.md`
+- Coding and refactor work: use `agents/backend-engineer.agent.md` and the relevant layer instructions.
+- Repeatable workflows: use the matching skill under `skills/<skill-name>/SKILL.md`.
+- Review work: prioritize correctness, regression risk, architecture boundaries, contract safety, auth, configuration, data safety, and test evidence.
 
-## Quick Skill Routing
+## Review Focus
 
-- Endpoint work -> `skills/build-endpoint.skill.md`
-- Use-case work -> `skills/build-use-case.skill.md`
-- Use-case DI and validation flow wiring -> `skills/wire-usecase-flow.skill.md`
-- Domain changes -> `skills/update-domain-model.skill.md`
-- Infrastructure/integrations -> `skills/build-infrastructure-dependency.skill.md`
-- Config work -> `skills/configure-application-settings.skill.md`
-- Local change review -> `skills/review-backend-change.skill.md`
-- PR review -> `skills/review-pull-request.skill.md`
-- PR protection and merge gate check -> `skills/protect-backend-project.skill.md`
+- Block unsafe changes when changed behavior lacks tests, rollout notes, or operational safeguards.
+- Keep review findings concise, risk-based, and actionable.
+- Favor merge-risk findings over style-only feedback.
 
-## Guardrails
+## Project Overrides
 
-- Prefer correctness, architecture boundaries, and regression prevention over style-only edits.
-- Do not approve risky changes without explicit test and operational coverage.
-- If a repeated issue appears, propose instruction or skill updates.
+- Load `instructions/project/domain-project.instructions.md` for local business rules.
+- Load `instructions/project/team-standards.instructions.md` for team review thresholds, required tests, approval gates, and local coding preferences.

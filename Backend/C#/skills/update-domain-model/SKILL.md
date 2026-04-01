@@ -1,19 +1,22 @@
-# Update Domain Model Skill
+---
+name: update-domain-model
+description: Change entities, value objects, enums, aggregates, or domain rules in a C# and .NET backend while preserving domain purity.
+---
+
+# Update Domain Model
 
 ## When to use
 
-Changing entities, value objects, enums, aggregates, or domain rules.
+Use this skill when changing entities, value objects, enums, aggregates, or domain rules.
 
-## Load this additional guidance
-
-Assume `@Backend-Engineer` has already loaded the core backend instructions.
+## Load this guidance
 
 - `instructions/layers/10-domain.instructions.md`
 - `instructions/project/domain-project.instructions.md` when project domain rules exist
 - `instructions/project/team-standards.instructions.md` when approval or modeling rules exist
 - `instructions/cross-cutting/21-testing.instructions.md` when tests are in scope
 
-## Patterns
+## Use these patterns as examples
 
 - `patterns/domain.pattern.md`
 - `patterns/entity-framework-core.pattern.md` only when persistence impact matters
@@ -26,14 +29,14 @@ Assume `@Backend-Engineer` has already loaded the core backend instructions.
 - relationships to other domain types
 - persistence impact if known
 
-## Steps
+## Workflow
 
 1. Confirm the change belongs in Domain, not Application, Infrastructure, or WebApi.
 2. Update the domain type and make rules explicit.
 3. Keep framework, transport, and persistence concerns out of Domain.
 4. Validate how the change affects relationships and invariants.
-5. Note downstream impact on UseCases, persistence, and API contracts.
-6. Suggest unit tests for invariants and behavior.
+5. Note downstream impact on use cases, persistence, and API contracts.
+6. Recommend unit tests for invariants and behavior.
 
 ## Output
 
@@ -41,10 +44,3 @@ Assume `@Backend-Engineer` has already loaded the core backend instructions.
 - invariants or business rules affected
 - downstream impact notes
 - test recommendations
-
-## Checklist
-
-- [ ] Domain remains framework-agnostic
-- [ ] No DTOs or EF Core mappings leak into Domain
-- [ ] Business rules are explicit
-- [ ] Project-specific domain rules are respected

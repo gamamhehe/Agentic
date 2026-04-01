@@ -1,12 +1,15 @@
-# Build Use Case Skill
+---
+name: build-use-case
+description: Create or update an Application use case, request and response contracts, and validators in a C# and .NET backend.
+---
+
+# Build Use Case
 
 ## When to use
 
-Adding or updating an Application UseCase and its request/response/validator contracts.
+Use this skill when adding or updating an Application use case and its request, response, and validator contracts.
 
-## Load this additional guidance
-
-Assume `@Backend-Engineer` has already loaded the core backend instructions.
+## Load this guidance
 
 - `instructions/layers/11-application.instructions.md`
 - `instructions/layers/10-domain.instructions.md` when domain concepts or rules are involved
@@ -15,7 +18,7 @@ Assume `@Backend-Engineer` has already loaded the core backend instructions.
 - `instructions/project/domain-project.instructions.md` when project domain rules exist
 - `instructions/project/team-standards.instructions.md` when local completion rules exist
 
-## Patterns
+## Use these patterns as examples
 
 - `patterns/application.pattern.md`
 
@@ -28,28 +31,20 @@ Assume `@Backend-Engineer` has already loaded the core backend instructions.
 - validation rules
 - infrastructure interfaces needed
 
-## Steps
+## Workflow
 
 1. Define the business action and pick the proper `IUseCase` interface shape.
-2. Place the UseCase under `Features/{BusinessContext}/UseCases/`.
-3. Co-locate request/response contracts as nested types or context-level contracts.
+2. Place the use case under `Features/{BusinessContext}/UseCases/`.
+3. Co-locate request and response contracts as nested types or context-level contracts.
 4. Add FluentValidation rules under `Features/{BusinessContext}/Validator/` for externally supplied request data.
 5. Keep `ExecuteAsync(...)` focused on orchestration, not transport or infrastructure details.
-6. Use Application interfaces only; do not depend on Infrastructure implementations.
-7. Ensure the UseCase is discoverable by automatic DI registration.
-8. Suggest UseCase and validator tests when behavior is non-trivial.
+6. Use Application interfaces only and do not depend on Infrastructure implementations.
+7. Ensure the use case is discoverable by automatic DI registration.
+8. Recommend use-case and validator tests when behavior is non-trivial.
 
 ## Output
 
-- use case summary
-- use case interface signature
+- use-case summary
+- interface signature
 - interfaces introduced or reused
 - validation and test recommendations
-
-## Checklist
-
-- [ ] UseCase naming matches business action
-- [ ] UseCase does not call another UseCase directly
-- [ ] Validator is co-located
-- [ ] Infrastructure dependencies are abstracted
-- [ ] DTO ownership stays in Application

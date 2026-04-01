@@ -7,6 +7,7 @@ applyTo: "**"
 # Review Gates Instructions
 
 Use this file for pre-merge protection checks.
+Use `23-pr-review.instructions.md` for the compact review workflow and output shape.
 
 ## Blocking Gate Categories
 

@@ -1,62 +1,63 @@
 ---
 name: Team-Standards-Instructions-Template
-description: Project-specific team operating rules for review strictness, testing floor, approval gates, and forbidden shortcuts.
+description: Recommended starting template for repository-specific review gates, testing floors, approval rules, and team preferences.
 ---
 
 # Team Standards Instructions
 
-Copy this template to `team-standards.instructions.md` and replace the placeholders with real team rules.
+Copy this file to `team-standards.instructions.md` for a new project, then replace the example defaults with real team decisions.
 
-Keep this file focused on team operating standards.
-Do not repeat generic architecture or framework guidance that already exists elsewhere.
+Keep this file focused on repository-specific operating rules. Do not repeat architecture, naming, or framework guidance that already exists elsewhere.
 
-## Keep here
+## How to customize this file
 
-- review strictness
-- minimum testing expectations
-- approval-required change types
-- forbidden shortcuts
-- observability requirements
-- naming or design preferences unique to the team
+- Keep the structure stable so Copilot can find the same decision categories in every repository.
+- Replace only the parts your team wants to tighten or relax.
+- Prefer explicit thresholds over blanks, placeholders, or "use judgment" language.
 
-## Do not keep here
+## Review Mode
 
-- generic clean architecture rules
-- general .NET knowledge
-- implementation examples
-- domain model reference data
+- Severity threshold: block `P0` and `P1`; require changes for unresolved `P2` risk on changed behavior.
+- Architecture violations: blocking when they break the dependency direction or move business logic into the wrong layer.
+- Missing tests: blocking for changed behavior, auth, config, persistence, and contract changes.
+- Observability gaps: blocking for critical paths, jobs, and integrations.
+- Style-only findings: advisory.
 
-## Sections to fill
+## Required for Feature Completion
 
-### Review Mode
+- Happy-path coverage for each changed behavior path.
+- Failure-path or validation-path coverage for externally triggered behavior.
+- Authorization coverage for auth and policy changes.
+- Contract verification for request, response, serialization, and versioning changes.
+- Logging or telemetry for critical flows and external integrations.
+- Cancellation token propagation in async application and infrastructure code.
 
-- severity threshold:
-- architecture violations:
-- missing tests:
-- observability gaps:
+## Approval Required Before Implementation
 
-### Required for Feature Completion
+- Schema changes, data migrations, or backfills.
+- New external services or SDKs.
+- Auth model changes.
+- New jobs, schedulers, or workers.
+- Breaking API contracts.
+- Secret-management changes.
 
-- at least one happy-path test:
-- validation coverage:
-- authorization coverage:
-- logging or telemetry requirements:
+## Forbidden Shortcuts
 
-### Approval Required Before Implementation
+- Business logic in endpoints or middleware.
+- Direct infrastructure access from Domain or Application.
+- Skipping tests for changed behavior.
+- Logging secrets or sensitive payloads.
 
-- database schema changes:
-- new external service integrations:
-- auth changes:
-- new background jobs:
+## Team Preferences
 
-### Forbidden Shortcuts
+- Prefer explicit request and response records.
+- Prefer typed results and complete OpenAPI metadata.
+- Prefer strongly typed options classes.
+- Prefer structured logging.
+- Prefer narrow refactors that preserve behavior.
 
-- business logic in endpoints:
-- direct infrastructure access from Domain or Application:
-- skipping tests for risky changes:
+## Pull Request Approval Expectations
 
-### Team Preferences
-
-- preferred result/error handling style:
-- preferred DTO conventions:
-- preferred dependency registration style:
+- Breaking changes include rollout notes.
+- Migration work includes rollback notes.
+- Integration and job changes include observability and failure-handling evidence.
