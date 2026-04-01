@@ -176,6 +176,62 @@ public static class DependencyInjection
 }
 ```
 
+## UseCaseExecutor / Decorator Wiring (Scrutor)
+
+The canonical approach to wrap all IUseCase<,> implementations with cross-cutting behavior (validation, logging, etc.) uses **Scrutor** open-generic decoration.
+
+### How it works
+
+1. AddUseCasesFromAssembly registers each concrete UseCase as Scoped and maps its IUseCase<,> interface.
+2. services.TryDecorate(typeof(IUseCase<,>), typeof(ValidatedUseCaseDecorator<,>)) wraps every resolved IUseCase<,> with the decorator at resolve time.
+3. The decorator runs IValidator<TRequest> instances before delegating to the inner UseCase.
+
+### Required NuGet dependency
+
+`
+Scrutor
+`
+
+### Registration order matters
+
+`csharp
+// 1. Register UseCases first â€” concrete + interface
+services.AddUseCasesFromAssembly(assembly);
+
+// 2. Register validators
+services.AddValidatorsFromAssembly(assembly);
+
+// 3. Decorate AFTER both are registered
+services.TryDecorate(typeof(IUseCase<,>), typeof(ValidatedUseCaseDecorator<,>));
+`
+
+If TryDecorate is called before AddUseCasesFromAssembly, no decoration occurs because there are no registrations to wrap.
+
+### Why Scrutor over manual wiring
+
+- Manual open-generic decorator wiring requires factory lambdas per interface variant, which becomes fragile with 30+ UseCases.
+- Scrutor handles open-generic decoration in a single call and works with Microsoft DI out of the box.
+- TryDecorate is idempotent â€” it only decorates if the service type is already registered.
+
+### Alternative: no Scrutor
+
+If the team cannot add Scrutor, the AddUseCasesFromAssembly extension must wire the decorator manually per interface:
+
+`csharp
+foreach (var iface in interfaces)
+{
+    services.AddScoped(iface, sp =>
+    {
+        var inner = (dynamic)sp.GetRequiredService(implementationType);
+        var validators = sp.GetServices(typeof(IValidator<>).MakeGenericType(iface.GetGenericArguments()[0]));
+        return Activator.CreateInstance(
+            typeof(ValidatedUseCaseDecorator<,>).MakeGenericType(iface.GetGenericArguments()),
+            inner, validators)!;
+    });
+}
+`
+
+This is harder to maintain. Prefer Scrutor when possible.
 ## Interactor/Executor Pattern (Optional)
 
 Location: `src/{ProjectName}.SharedKernel/IInteractor.cs` (contract)

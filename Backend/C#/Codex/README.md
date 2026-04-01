@@ -8,7 +8,8 @@ This is the Codex-specific backend guidance pack for C# and .NET repositories.
 
 It is built around:
 
-- `AGENTS.md` as the main repository instruction surface
+- `AGENTS.md` as the main repository instruction surface and router
+- `dotnet-backend-rules` as the foundational Codex skill for C# and .NET backend rules
 - shared repo-root domain reference for C# and .NET projects sourced from `../domain-project.instructions.md`
 - optional Codex skills under `skills/<skill-name>/SKILL.md`
 - optional reference patterns under `patterns/`
@@ -30,6 +31,7 @@ Codex should read this file directly from the target repository root. This is th
 - `patterns/*.pattern.md`
 
 `domain-project.instructions.md` is the shared business-domain reference used by both Codex and GithubCopilot for C# and .NET projects only. Skills are optional workflow accelerators. Patterns are optional examples and are not required for installation.
+For real C# and .NET work, `dotnet-backend-rules` is the recommended first skill to install because `AGENTS.md` is designed to load it before other focused skills.
 
 ## How
 
@@ -46,8 +48,9 @@ If `<target-repo>/domain-project.instructions.md` already exists, do not replace
 
 If you want reusable Codex workflows across repositories:
 
-1. Pick the skill folders you want from `Backend/C#/Codex/skills/`.
-2. Copy each folder into your user-level Codex skills directory.
+1. Install `dotnet-backend-rules` first.
+2. Pick any additional focused skill folders you want from `Backend/C#/Codex/skills/`.
+3. Copy each folder into your user-level Codex skills directory.
 
 ### Automatic setup prompt for the current repository
 
@@ -62,9 +65,10 @@ Then set up Codex backend guidance for the current repository:
 2. Copy `Backend/C#/Codex/AGENTS.md` into the current repository root as `AGENTS.md`.
 3. If the current repository is a C# or .NET backend and `domain-project.instructions.md` does not exist in the current repository root, offer to copy `Backend/C#/domain-project.instructions.md`.
 4. If `domain-project.instructions.md` already exists, do not replace it automatically. Ask whether to `replace`, `skip`, or `stop all`.
-5. For user-level Codex skills, copy only the missing skill folders from `Backend/C#/Codex/skills/` into `~/.codex/skills/`.
-6. If a target skill folder already exists, do not overwrite it silently. Ask whether to `replace`, `skip`, or `stop all`.
-7. At the end, show:
+5. For user-level Codex skills, always include `Backend/C#/Codex/skills/dotnet-backend-rules/` for C# and .NET repositories.
+6. Then copy only the missing additional skill folders from `Backend/C#/Codex/skills/` into `~/.codex/skills/`.
+7. If a target skill folder already exists, do not overwrite it silently. Ask whether to `replace`, `skip`, or `stop all`.
+8. At the end, show:
    - files installed in the current repository
    - skills added because they were missing
    - any skipped or pending conflicts
@@ -78,6 +82,7 @@ git clone https://github.com/gamamhehe/Agentic.git
 Copy-Item .\Agentic\Backend\C#\Codex\AGENTS.md <target-repo>\AGENTS.md
 Copy-Item .\Agentic\Backend\C#\domain-project.instructions.md <target-repo>\domain-project.instructions.md
 
+Copy-Item -Recurse .\Agentic\Backend\C#\Codex\skills\dotnet-backend-rules $env:USERPROFILE\.codex\skills\
 Copy-Item -Recurse .\Agentic\Backend\C#\Codex\skills\review-pull-request $env:USERPROFILE\.codex\skills\
 Copy-Item -Recurse .\Agentic\Backend\C#\Codex\skills\build-endpoint $env:USERPROFILE\.codex\skills\
 ```
@@ -87,6 +92,7 @@ Copy-Item -Recurse .\Agentic\Backend\C#\Codex\skills\build-endpoint $env:USERPRO
 - Copy `AGENTS.md` into the target repo root
 - Optionally copy `domain-project.instructions.md` into the target repo root for shared business-domain rules in C# and .NET projects only
 - If `domain-project.instructions.md` already exists in the target repo, do not overwrite it automatically
+- Install `dotnet-backend-rules` into `~/.codex/skills/` for C# and .NET repositories
 - Optionally copy selected skill folders into `~/.codex/skills/`
 - For skills, prefer adding only folders that do not already exist
 - Optionally keep `patterns/` nearby as reference docs
@@ -145,7 +151,7 @@ Use repo-root `domain-project.instructions.md` to define project-specific domain
 
 ### Backend engineers
 
-Use the repo `AGENTS.md` every day, and add optional skills if you want reusable workflows across projects.
+Use the repo `AGENTS.md` every day, install `dotnet-backend-rules`, and add optional focused skills if you want reusable workflows across projects.
 
 ### Reviewers
 
@@ -173,6 +179,8 @@ Use this README to install the minimum repo guidance and decide which optional s
 ```text
 ~/.codex/
   skills/
+    dotnet-backend-rules/
+      SKILL.md
     build-endpoint/
       SKILL.md
     review-pull-request/
@@ -183,6 +191,7 @@ Use this README to install the minimum repo guidance and decide which optional s
 
 ## Available optional skills
 
+- `dotnet-backend-rules`
 - `profile-current-backend-project`
 - `bootstrap-new-backend-project`
 - `build-endpoint`
@@ -194,7 +203,7 @@ Use this README to install the minimum repo guidance and decide which optional s
 - `review-backend-change`
 - `review-pull-request`
 
-Configuration, observability, feature-local use-case flow wiring, and fast merge-gate checks are covered inside the canonical skills above rather than exposed as separate top-level skills.
+Configuration, observability, feature-local use-case flow wiring, and fast merge-gate checks are covered inside the canonical skills above rather than exposed as separate top-level skills. `dotnet-backend-rules` is the shared baseline skill that should load before those focused skills.
 
 ## GithubCopilot vs Codex
 
@@ -205,7 +214,7 @@ Configuration, observability, feature-local use-case flow wiring, and fast merge
 
 ## Notes
 
-- `AGENTS.md` is the only required runtime file in this pack.
+- `AGENTS.md` is intentionally compact and should load `dotnet-backend-rules` for C# and .NET repositories.
 - `domain-project.instructions.md` is the shared optional domain source for Codex and GithubCopilot in C# and .NET repositories.
 - If the target repository already has `domain-project.instructions.md`, keep that local file unless replacement is explicitly approved.
 - Skills are optional and should assume Codex reads `AGENTS.md` first.
