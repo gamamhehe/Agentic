@@ -1,0 +1,4 @@
+interface:
+  display_name: "Dotnet Backend Rules"
+  short_description: "Apply .NET backend architecture rules"
+  default_prompt: "Use $dotnet-backend-rules to apply the shared C# and .NET backend rulebook for architecture, layer boundaries, testing expectations, review gates, and reference patterns."
