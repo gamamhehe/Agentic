@@ -3,7 +3,7 @@ description: Review a local backend change or staged patch before merge.
 agent: agent
 ---
 
-Use `@Backend-Engineer` if it is available.
+Use `@Global` if it is available.
 
 Review the current backend change before it is merged.
 

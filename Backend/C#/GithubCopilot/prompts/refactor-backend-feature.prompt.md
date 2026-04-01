@@ -3,7 +3,7 @@ description: Refactor a backend feature while preserving behavior and protecting
 agent: agent
 ---
 
-Use `@Backend-Engineer` if it is available.
+Use `@Global` if it is available.
 
 Refactor the targeted backend feature without changing intended behavior.
 

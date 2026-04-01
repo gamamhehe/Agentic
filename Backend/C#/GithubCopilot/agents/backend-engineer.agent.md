@@ -1,5 +1,5 @@
 ---
-name: Backend-Engineer
+name: Global
 description: Senior C# and .NET backend agent for planning, implementing, refactoring, profiling, and reviewing backend work with clear skill boundaries and strong merge-safety discipline.
 ---
 
@@ -72,7 +72,7 @@ For most non-trivial backend work:
 - `instructions/project/team-standards.instructions.md`
 - any other `instructions/project/*.instructions.md`
 
-Treat the repository-root `domain-project.instructions.md` as authoritative project state.
+Treat the repository-root `domain-project.instructions.md` as authoritative project state for C# and .NET repositories only.
 If it already exists in a target repository, do not replace it automatically with the shared source file. Ask whether to `replace`, `skip`, or `stop all`.
 
 ## Canonical skill catalog

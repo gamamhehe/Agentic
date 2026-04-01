@@ -3,7 +3,7 @@ description: Review a backend pull request for correctness, merge risk, architec
 agent: agent
 ---
 
-Use `@Backend-Engineer` if it is available.
+Use `@Global` if it is available.
 
 Review this backend pull request with a correctness-first, merge-risk-focused workflow.
 

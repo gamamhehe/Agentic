@@ -6,7 +6,7 @@ applyTo: "**"
 
 # Backend C# Copilot Instructions
 
-Default to `@Backend-Engineer` for backend work in VS Code when the custom agent is available.
+Default to `@Global` for backend work in VS Code when the custom agent is available.
 
 Use this file as the repository-wide baseline only. Keep detailed rules in `instructions/`, repeatable workflows in `skills/*/SKILL.md`, and examples in `patterns/`.
 
@@ -32,7 +32,7 @@ Use this file as the repository-wide baseline only. Keep detailed rules in `inst
 
 ## Project Overrides
 
-- Load the repository-root `domain-project.instructions.md` for local business rules.
+- Load the repository-root `domain-project.instructions.md` for local business rules in C# and .NET repositories.
 - Load `instructions/project/team-standards.instructions.md` for team review thresholds, required tests, approval gates, and local coding preferences.
 
 If repository-root `domain-project.instructions.md` already exists, treat it as the local source of truth and do not overwrite it automatically.

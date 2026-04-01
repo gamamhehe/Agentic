@@ -2,11 +2,11 @@
 
 This folder now contains two tool-specific guidance packs for C# and .NET backend work.
 
-It also contains one shared project-domain file:
+It also contains one shared project-domain file for C# and .NET only:
 
 - `domain-project.instructions.md`
 
-Keep that file at the target repository root when you want GithubCopilot and Codex to read the same business language, aggregate names, invariants, and workflow rules.
+Keep that file at the target repository root only when the target repository is a C# or .NET backend and you want GithubCopilot and Codex to read the same business language, aggregate names, invariants, and workflow rules.
 
 ## Choose the right pack
 

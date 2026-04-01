@@ -9,7 +9,7 @@ This folder is a reusable GitHub Copilot backend guidance pack built around Copi
 - custom agent: `agents/backend-engineer.agent.md`
 - repository baseline instructions: `copilot-instructions.md`
 - path-specific instructions: `instructions/**/*.instructions.md`
-- shared domain reference source: `../domain-project.instructions.md`
+- shared domain reference source for C# and .NET projects: `../domain-project.instructions.md`
 - agent skills: `skills/<skill-name>/SKILL.md`
 - reusable prompt files: `prompts/*.prompt.md`
 - reference examples: `patterns/*.pattern.md`
@@ -20,7 +20,7 @@ Patterns are examples only. They help shape implementations, but they do not def
 
 ```text
 {workspaceRoot}/
-  domain-project.instructions.md
+  domain-project.instructions.md   (optional, C# and .NET projects only)
   .github/
     agents/
       backend-engineer.agent.md
@@ -102,7 +102,7 @@ If a workspace already contains .github guidance, keep using the workspace instr
 
 ### Use the custom agent for day-to-day backend work
 
-Choose `Backend-Engineer` in VS Code when you want Copilot to classify the task, load only the relevant instructions, and use the matching skill.
+Choose `Global` in VS Code when you want Copilot to classify the task, load only the relevant instructions, and use the matching skill.
 
 Good task examples:
 
@@ -128,7 +128,7 @@ Prompt files give teams consistent entrypoints for recurring tasks:
 
 Keep project-specific decisions in these manual files:
 
-- repository-root `domain-project.instructions.md` sourced from `Backend/C#/domain-project.instructions.md`
+- repository-root `domain-project.instructions.md` sourced from `Backend/C#/domain-project.instructions.md` for C# and .NET projects only
 - `instructions/project/team-standards.instructions.md`
 
 Use the project templates when starting from scratch:
@@ -136,7 +136,7 @@ Use the project templates when starting from scratch:
 - `instructions/project/team-standards.instructions.template.md`
 - `instructions/project/team-standards.example.instructions.md`
 
-`domain-project.instructions.md` is now shared between GithubCopilot and Codex. Keep one repo-root copy in the target repository so both tools can read the same business language and invariants.
+`domain-project.instructions.md` is now shared between GithubCopilot and Codex for C# and .NET projects only. Keep one repo-root copy in the target repository when both tools should read the same business language and invariants.
 If that repo-root file already exists, keep it unless I explicitly approve replacement.
 
 ## Available backend skills
@@ -170,7 +170,7 @@ After installing into a repository:
 
 1. Open VS Code in the target repo.
 2. Open Copilot Chat.
-3. Select `Backend-Engineer` if the custom agent is installed in the workspace.
+3. Select `Global` if the custom agent is installed in the workspace.
 4. Run one of the prompt files or ask a backend task in natural language.
 
 Expected behavior:

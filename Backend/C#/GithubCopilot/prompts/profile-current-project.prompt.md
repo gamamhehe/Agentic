@@ -3,7 +3,7 @@ description: Profile the current C# and .NET backend repository for architecture
 agent: agent
 ---
 
-Use `@Backend-Engineer` if it is available.
+Use `@Global` if it is available.
 
 Profile the current backend repository before proposing changes.
 

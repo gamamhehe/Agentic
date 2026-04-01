@@ -3,7 +3,7 @@ description: Bootstrap GitHub Copilot guidance for a new C# and .NET backend rep
 agent: agent
 ---
 
-Use `@Backend-Engineer` if it is available.
+Use `@Global` if it is available.
 
 Set up the backend Copilot guidance pack for this repository.
 
